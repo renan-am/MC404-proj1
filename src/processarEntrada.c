@@ -1,5 +1,7 @@
 #include "montador.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /*
 Exemplo de erros:
@@ -21,8 +23,63 @@ const char* get_error_string (enum errors code) {
         * 1 caso haja erro na montagem; (imprima o erro em stderr)
         * 0 caso não haja erro.         (Caso não haja erro, na parte 1, ao retornar desta função, a lista de Tokens (adicionados utilizando a função adicionarToken()) é impressa)
 */
+
+char *Buffer (char input){
+    static char temp[4097];
+    static int indice = 0;
+    static int lendo_vazio = 0;
+    static int lendo_coment = 0;
+    char *resposta = NULL;
+    
+    if (lendo_vazio) {
+    	if (input == ' ' || input == '\t' || input == '\n')
+    		return NULL;
+    	else if (input == '#')
+    		lendo_coment = 1;
+    	
+    	lendo_vazio = 0;
+    }
+
+    if (lendo_coment) {
+    	if (input == '\n' || input == '\0'){
+    		lendo_coment = 0;
+    		lendo_vazio = 1;
+    	}
+    	return NULL;
+    } 
+
+    if (input != ' ' && input != '\t' && input != '\n' && input != '\0' && input != '#'){
+        temp[indice++] = input;
+        return NULL;
+	} else {
+    	temp[indice++] = '\0';
+    	resposta = malloc (indice * sizeof(char));
+    	strcpy (resposta, temp);
+    	indice = 0;
+    	if (input == '#') {
+			lendo_coment = 1;
+			lendo_vazio = 0;
+	    } else {
+			lendo_vazio = 1;
+	    }
+	    return resposta;
+    }
+
+    
+
+    return NULL;
+
+}
+
 int processarEntrada(char* entrada, unsigned tamanho)
 {
-    /* printf("Você deve implementar esta função para a Parte 1.\n"); */
+    //printf ("%s\n", entrada);
+	char *aux;
+    for (int i = 0; entrada[i] != '\0'; i++){
+    	if ( (aux = Buffer(entrada[i])) )
+    		printf ("%s\n", aux);
+    }
+
+
     return 0;
 }

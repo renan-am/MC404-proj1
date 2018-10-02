@@ -1,0 +1,12 @@
+vetor1:
+vetor2:
+.word
+0x10
+vetor3:
+.word
+10
+.word
+10
+.word
+10
+Lista de tokens
