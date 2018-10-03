@@ -116,11 +116,8 @@ Token *buscarTrie(NODE *raiz, char *palavra, unsigned linha){
 	}
 
 	if (aux->forma_palavra && aux->token != NULL){
-		return aux->token;
+		return novoToken(aux->token->palavra, aux->token->tipo, linha);
 	}
-
-
-	
 
 	return NULL;
 }

@@ -31,6 +31,7 @@ char *Buffer (char input){
     static int indice = 0;
     static int lendo_vazio = 0;
     static int lendo_coment = 0;
+    static int lendo_palavra = 0;
     char *resposta = NULL;
     
     if (lendo_vazio) {
@@ -51,9 +52,10 @@ char *Buffer (char input){
     } 
 
     if (input != ' ' && input != '\t' && input != '\n' && input != '\0' && input != '#'){
+        lendo_palavra = 1;
         temp[indice++] = tolower(input);
         return NULL;
-	} else {
+	} else if (lendo_palavra) {
     	temp[indice++] = '\0';
     	resposta = malloc (indice * sizeof(char));
     	strcpy (resposta, temp);
@@ -65,10 +67,17 @@ char *Buffer (char input){
 	    } else {
 			lendo_vazio = 1;
 	    }
-	   
+	   	lendo_palavra = 0;
         return resposta;
     }
 
+    if (input == '#') {
+			lendo_coment = 1;
+			lendo_vazio = 0;
+	    } else {
+			lendo_vazio = 1;
+	    }
+	   	lendo_palavra = 0;
     
 
     return NULL;
@@ -187,6 +196,7 @@ int checarDec(char *dec){
     return 1;
 }
 
+    // fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
 
 
 Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
@@ -201,31 +211,64 @@ Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
         if (aux->tipo == Hexadecimal){
             if (checarHex(aux->palavra))
                 return aux;
-            else
+            else{
+                fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
                 return NULL; //ERRO Léxico: Hexadecimal escrito errado
+            }
         } else if (aux->tipo == Decimal) {
-            if (checarDec(aux->palavra))
+            if (checarDec(aux->palavra)){
                 return aux;
-            else
+            } else{
+                fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
                 return NULL; //ERRO Léxico: Decimal escrito errado
+            }
         } else {
             return aux; //Palavra é Diretiva ou Instrucao
         } 
     } else { //Palavra é Nome ou DefRotulo
         if (palavra[tam-1] == ':'){
+        	if (palavra[0] == '.'){
+	            fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
+	            return NULL; // Erro Lexico: ':' no meio de um nome
+	    	}
             for (int i = 0; i < tam-1; i++){
-                if (palavra[i] == ':')
+                if (
+                    !(
+                        (palavra[i] >= 48 && palavra[i] <= 57)  || 
+                        (palavra[i] >= 97 && palavra[i] <= 122) || 
+                        (palavra[i] >= 65 && palavra[i] <= 90)  || 
+                        (palavra[i] == '_') || 
+                        (palavra[i] == '.') 
+                    )
+                ){
+                    fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
                     return NULL; // Erro Lexico: ':' no meio de um nome
+            	}
             }
             return novoToken (palavra, DefRotulo, linha);
         } else {
+        	if (palavra[0] == '.'){
+	            fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
+	            return NULL; // Erro Lexico: ':' no meio de um nome
+	    	}
             for (int i = 0; i < tam; i++){
-                if (palavra[i] == ':')
+                if (
+                    !(
+                        (palavra[i] >= 48 && palavra[i] <= 57)  || 
+                        (palavra[i] >= 97 && palavra[i] <= 122) || 
+                        (palavra[i] >= 65 && palavra[i] <= 90)  || 
+                        (palavra[i] == '_') || 
+                        (palavra[i] == '.') 
+                    )
+                ){
+                    fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
                     return NULL; // Erro Lexico: ':' no meio de um nome
+                }
             }
             return novoToken (palavra, Nome, linha);
         }
     }
+    fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
     return NULL; //Codigo não deveria chegar aqui
 }
 
@@ -244,13 +287,13 @@ int processarEntrada(char* entrada, unsigned tamanho)
     for (int i = 0; entrada[i] != '\0'; i++){
         if ( (aux = Buffer(entrada[i])) ){
             temp = classificarPalavra(raiz, aux, linha_atual);
-            adicionarToken (*temp);
+            if (!temp)
+            	return 1;
+            else
+            	adicionarToken (*temp);
         }
-        
-        
-
-        if (entrada[i] == '\n')
-            linha_atual++;
+    if (entrada[i] == '\n')
+        linha_atual++;   
     }
 
 
