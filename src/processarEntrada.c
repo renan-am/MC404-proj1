@@ -163,9 +163,70 @@ int checarNumero(char *palavra){
     }
 }
 */
+//retorna 1 se for Hexadecimal, 0 se não for
+int checarHex(char *hex){
+    int tam = strlen(hex);
+
+    if (tam <= 2)
+        return 0;
+    else
+        for (int i = 2; i < tam; i++)
+            if (!((hex[i] >= 48 && hex[i] <= 57) || (hex[i] >= 97 && hex[i] <= 102) || (hex[i] >= 65 && hex[i] <= 70))) //checa se o char não esta entre 0-9, a-f, A-F
+                return 0;
+
+    return 1;
+}
+//retorna 1 se for Decimal, 0 se não for
+int checarDec(char *dec){
+    int tam = strlen(dec);
+
+    for (int i = 0; i < tam; i++)
+        if (!(dec[i] >= 48 && dec[i] <= 57))
+            return 0;
+
+    return 1;
+}
+
+
 
 Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
-    
+    Token *aux = NULL;
+    int tam = strlen(palavra);
+    if (tam == 0){
+        printf("Palavra Vazia\n");
+        return NULL; //Erro: Palavra Vazia
+    }
+
+    if ( (aux = buscarTrie(raiz, palavra, linha)) ){ //palavra é Diretiva, Instrucao, Hexadecimal ou Decimal
+        if (aux->tipo == Hexadecimal){
+            if (checarHex(aux->palavra))
+                return aux;
+            else
+                return NULL; //ERRO Léxico: Hexadecimal escrito errado
+        } else if (aux->tipo == Decimal) {
+            if (checarDec(aux->palavra))
+                return aux;
+            else
+                return NULL; //ERRO Léxico: Decimal escrito errado
+        } else {
+            return aux; //Palavra é Diretiva ou Instrucao
+        } 
+    } else { //Palavra é Nome ou DefRotulo
+        if (palavra[tam-1] == ':'){
+            for (int i = 0; i < tam-1; i++){
+                if (palavra[i] == ':')
+                    return NULL; // Erro Lexico: ':' no meio de um nome
+            }
+            return novoToken (palavra, DefRotulo, linha);
+        } else {
+            for (int i = 0; i < tam; i++){
+                if (palavra[i] == ':')
+                    return NULL; // Erro Lexico: ':' no meio de um nome
+            }
+            return novoToken (palavra, Nome, linha);
+        }
+    }
+    return NULL; //Codigo não deveria chegar aqui
 }
 
 
@@ -174,34 +235,36 @@ int processarEntrada(char* entrada, unsigned tamanho)
 
     NODE *raiz = inicializarTrie();
 
- /*   
+   
     //printf ("%s\n", entrada);
 	char *aux;
     int linha_atual = 1;
-    Token linha[10];
-
+    //Token linha[10];
+    Token *temp;
     for (int i = 0; entrada[i] != '\0'; i++){
-        if ( (aux = Buffer(entrada[i])) )
-            printf ("%s\n", aux);
+        if ( (aux = Buffer(entrada[i])) ){
+            temp = classificarPalavra(raiz, aux, linha_atual);
+            adicionarToken (*temp);
+        }
         
         
 
         if (entrada[i] == '\n')
             linha_atual++;
     }
-*/
 
 
 
+/*
     Token *aux = NULL;
     char bus[50];
-    strcpy (bus, "asdfa");
+    strcpy (bus, "0:");
     aux = buscarTrie(raiz, bus, 0);
     if (aux)
         printf ("busca (%s): palavra = %s, tipo = %d\n", bus, aux->palavra, aux->tipo);
     else
         printf ("busca não encontrou (%s)\n", bus);
-
+*/
 
 
     //printf("inseriu\n");
