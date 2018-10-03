@@ -3,6 +3,9 @@
 #include <string.h>
 #include "token.h"
 
+//a-z (0-25); . (26); _ (27); 0-9 (28)
+#define ALFABETO_TAM 29 //(a-z + _ + . + (0-9) ) 
+
 typedef struct NODE{
 	struct NODE *prox[ALFABETO_TAM];
 	int forma_palavra;
@@ -13,33 +16,44 @@ int getIndice(char alvo){
 	if (alvo >= 97 && alvo <= 122)
 		return (alvo - 'a');
 	else if (alvo >= 65 && alvo <= 90)
-		return (alvo + 40 - 'A');
+		return (alvo - 'A');
 	else if (alvo == '.')
-		return 27;
+		return 26;
 	else if (alvo == '_')
+		return 27;
+	else if (alvo >= 48 && alvo <= 57)
 		return 28;
 	else
 		return -1;
 }
+/*
+char getLetra(int i){
+	if (i >= 0 || i <= 25)
+		return (i + 'a');
+	else if (i == 26)
+		return '.';
+	else if (i == 27)
+		return '_';
+	else
+		return 0;
+}
+*/
 
-struct TrieNode *getNode() 
-{ 
-    NODE *aux = NULL; 
-  
-    aux = malloc(sizeof(NODE)); 
-  
-    if (aux) 
-    { 
-        int i; 
-  
-        for (i = 0; i < ALPHABET_SIZE; i++) 
-            pNode->children[i] = NULL; 
-    } 
-  
-    return pNode; 
+static Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
+    int tam = strlen(palavra);
+    
+    Token *temp = malloc(sizeof(Token));
+    
+    temp->palavra = malloc((tam+1)*sizeof(char));
+    strcpy(temp->palavra, palavra);
+
+    temp->tipo = tipo;
+    temp->linha = linha;
+
+    return temp;
 }
 
-void inserir (NODE *raiz, char *palavra, TipoDoToken tipo){
+void inserirTrie (NODE *raiz, TipoDoToken tipo, char *palavra){
 	int tam = strlen(palavra);
 	int indice;
 
@@ -53,7 +67,7 @@ void inserir (NODE *raiz, char *palavra, TipoDoToken tipo){
 			temp->forma_palavra = 0;
 			temp->token = NULL;
 			
-			for (int j = 0; j < ALPHABET_TAM; j++)
+			for (int j = 0; j < ALFABETO_TAM; j++)
 				temp->prox[j] = NULL;
 
 			aux->prox[indice] = temp;
@@ -62,18 +76,67 @@ void inserir (NODE *raiz, char *palavra, TipoDoToken tipo){
 		aux = aux->prox[indice];
 	}
 
-	aux->forma_palavra = 0;
+	aux->forma_palavra = 1;
 	aux->token = malloc(sizeof(Token));
-	aux->token->palavra = malloc(tam*sizeof(char));
+	aux->token->palavra = malloc((tam+1)*sizeof(char));
 	strcpy (aux->token->palavra, palavra);
 	aux->token->tipo = tipo;
+}
+
+Token *buscarTrie(NODE *raiz, char *palavra, unsigned linha){
+	int tam = strlen(palavra);
+	int indice;
+
+	NODE *aux = raiz;
+
+	for (int i = 0; i < tam; i++){
+		indice = getIndice(palavra[i]);
+		if (indice < 0)
+			break;
+
+		if (!aux->prox[indice]){
+			if (palavra[0] >= 48 && palavra[0] <= 57){
+				if (tam >= 2 && palavra[1] == 'x')
+					return novoToken(palavra, Hexadecimal, linha);
+				else
+					return novoToken(palavra, Decimal, linha);
+			}
+			
+			return NULL;
+		}
+
+		aux = aux->prox[indice];
+	}
+
+	if (palavra[0] >= 48 && palavra[0] <= 57){
+		if (tam >= 2 && palavra[1] == 'x')
+			return novoToken(palavra, Hexadecimal, linha);
+		else
+			return novoToken(palavra, Decimal, linha);
+	}
+
+	if (aux->forma_palavra && aux->token != NULL){
+		return aux->token;
+	}
+
+
+	
+
+	return NULL;
 }
 
 
 
 void imprimirTrie(NODE *raiz){
-	
+	for (int i = 0; i < ALFABETO_TAM; i++)
+		if (raiz->prox[i] != NULL)
+			imprimirTrie(raiz->prox[i]);
+		
+	if (raiz->token && raiz->forma_palavra)
+		printf ("token = %s, tipo = %d\n", raiz->token->palavra, (raiz->token->tipo - 1000));
 }
+
+
 
 
 
