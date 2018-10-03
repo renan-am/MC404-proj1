@@ -4,15 +4,15 @@
 #include <string.h>
 
 /*
-Exemplo de erros:
-const char* get_error_string (enum errors code) {
-    switch (code) {
-        case ERR_HEXADECIMAL_NAO_VALIDO:
-            return "LEXICO: Numero Hexadecimal Inválido!";
-        case ERRO_ROTULO_JA_DEFINIDO:
-            return "GRAMATICAL: ROTULO JA FOI DEFINIDO!";
-        case ERR_DIRETIVA_NAO_VALIDA:
-            return "LEXICO: Diretiva não válida";
+    Exemplo de erros:
+    const char* get_error_string (enum errors code) {
+        switch (code) {
+            case ERR_HEXADECIMAL_NAO_VALIDO:
+                return "LEXICO: Numero Hexadecimal Inválido!";
+            case ERRO_ROTULO_JA_DEFINIDO:
+                return "GRAMATICAL: ROTULO JA FOI DEFINIDO!";
+            case ERR_DIRETIVA_NAO_VALIDA:
+                return "LEXICO: Diretiva não válida";
 */
 
 /*
@@ -36,8 +36,8 @@ char *Buffer (char input){
     		return NULL;
     	else if (input == '#')
     		lendo_coment = 1;
-    	
-    	lendo_vazio = 0;
+
+    	lendo_vazio = 0;       
     }
 
     if (lendo_coment) {
@@ -56,28 +56,39 @@ char *Buffer (char input){
     	resposta = malloc (indice * sizeof(char));
     	strcpy (resposta, temp);
     	indice = 0;
-    	if (input == '#') {
+    	
+        if (input == '#') {
 			lendo_coment = 1;
 			lendo_vazio = 0;
 	    } else {
 			lendo_vazio = 1;
 	    }
-	    return resposta;
+	   
+        return resposta;
     }
 
     
 
     return NULL;
-
 }
+
+
 
 int processarEntrada(char* entrada, unsigned tamanho)
 {
     //printf ("%s\n", entrada);
 	char *aux;
+    int linha_atual = 1;
+    Token linha[]
+
     for (int i = 0; entrada[i] != '\0'; i++){
-    	if ( (aux = Buffer(entrada[i])) )
-    		printf ("%s\n", aux);
+        if ( (aux = Buffer(entrada[i])) )
+            printf ("%s\n", aux);
+        
+        
+
+        if (entrada[i] == '\n')
+            linha_atual++;
     }
 
 
