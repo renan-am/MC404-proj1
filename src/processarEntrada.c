@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "trie.h"
+//#include "func_aux.c"
 
 /*
     Exemplo de erros:
@@ -250,20 +251,191 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     return NULL; //Codigo não deveria chegar aqui
 }
 
-/*
-int checarErroGram(Token *linha, int tam){
-	int flag_hex = 0, flag_dec = 0, flag_rot
 
-
+//return 1 = erro
+//return 0 = OK
+int checarErroGram(Token **linha, int tam, int fim){
+	
 	for (int i = 0; i < tam; i++){
-		switch (linha[i]->tipo){
-			case Instrucao:
-				
+		if (linha[i]->tipo == Instrucao){
+			if ( !strcmp(linha[i]->palavra, "lsh") || !strcmp(linha[i]->palavra, "rsh") || !strcmp(linha[i]->palavra, "ldmq") ){
+				if (fim){
+					if (i+1 >= tam)
+						return 0;
+					else
+						return 1; //ERRO: não pode ter mais tokens nessa linha
+				}
+				else
+					return 0;
+			} else {
+				if (i+1 >= tam){
+					if (fim)
+						return 1; //instrução no fim da linha sem endereço seguindo
+					else
+						return 0;
+				} else {
+					if ( checarNome(linha[i+1]) && checarHexDec0_1023(linha[i+1]) ){
+						return 1;
+					} else {
+						if (fim){
+							if (i+2 >= tam)
+								return 0;
+							else
+								return 1; //ERRO: Não pode ter mais tokens nessa linha
+						} else {
+							return 0;
+						}
+					}
+				} 
+			}
+		}
+		else if (linha[i]->tipo == Diretiva){
+			if ( !strcmp(linha[i]->palavra, ".wfill") ){
+				if (i+1 >= tam){
+					if (fim)
+						return 1; //ERRO .wfill no fim da linha
+					else 
+						return 0;	
+				} else {
+					if ( checarDec1_1023(linha[i+1]) )
+						return 1; //ERRO: argumento depois de .wfill não é decimal entre 1 e 1023
+					else {
+						if (i+2 >= tam){
+							if (fim)
+								return 1; //ERRO .wfill sem o segundo o argumento
+							else 
+								return 0;	
+						} else {
+							if ( checarHexDecMIN_MAX (linha[i+2]) && checarNome (linha[i+2]))
+								return 1; //ERRO: 2º argumento de .wfill errado
+							else {
+								if (fim){
+									if (i+3 >= tam)
+										return 0;
+									else
+										return 1; //ERRO: Não pode ter mais tokens nessa linha
+								} else {
+									return 0;
+								}
+							}
+						}
+					}		
+				}
+			}
+			else if (!strcmp(linha[i]->palavra, ".set")){
+				if (i+1 >= tam){
+					if (fim)
+						return 1; //ERRO .set no fim da linha
+					else 
+						return 0;	
+				} else {
+					if ( checarNome (linha[i+1]) ){
+						return 1; //ERRO: argumento depois de .set não é nome
+					}
+					else {
+						if (i+2 >= tam){
+							if (fim)
+								return 1; //ERRO .set sem o segundo o argumento
+							else 
+								return 0;	
+						} else {
+							if ( checarHexDec0_MAX (linha[i+2]))
+								return 1; //ERRO: 2º argumento de .set errado
+							else {
+								if (fim){
+									if (i+3 >= tam)
+										return 0;
+									else
+										return 1; //ERRO: Não pode ter mais tokens nessa linha
+								} else {
+									return 0;
+								} 
+							}
+						}
+					}		
+				}
+			}
+			else if (!strcmp(linha[i]->palavra, ".org")){
+				if (i+1 >= tam){
+					if (fim)
+						return 1; // falta argumento
+					else
+						return 0;
+				} else {
+					if ( checarNome(linha[i+1]) && checarHexDec0_1023(linha[i+1]) ){
+						return 1;
+					} else {
+						if (fim){
+							if (i+2 >= tam)
+								return 0;
+							else
+								return 1; //ERRO: Não pode ter mais tokens nessa linha
+						} else {
+							return 0;
+						} 
+					}
+				} 
+			}
+			else if (!strcmp(linha[i]->palavra, ".align")){
+				if (i+1 >= tam){
+					if (fim)
+						return 1; // falta argumento
+					else
+						return 0;
+				} else {
+					if ( checarDec1_1023(linha[i+1]) ){
+						return 1;
+					} else {
+						if (fim){
+							if (i+2 >= tam)
+								return 0;
+							else
+								return 1; //ERRO: Não pode ter mais tokens nessa linha
+						} else {
+							return 0;
+						}
+					}
+				} 
+			}
+			else if (!strcmp(linha[i]->palavra, ".word")){
+				if (i+1 >= tam){
+					if (fim)
+						return 1; // falta argumento
+					else
+						return 0;
+				} else {
+					if ( checarHexDecMIN_MAX (linha[i+1]) && checarNome (linha[i+1]) ){
+						return 1;
+					} else {
+						if (fim){
+							if (i+2 >= tam)
+								return 0;
+							else
+								return 1; //ERRO: Não pode ter mais tokens nessa linha
+						} else {
+							return 0; 
+						}
+					}
+				}
+			}
+		}
+		else if (linha[i]->tipo == DefRotulo){
+			if (i+1 < tam) {
+				if (checarNome (linha[i+1]) || checarInstrucao(linha[i+1]) || checarDiretiva(linha[i+1])){
+					continue;
+				} else {
+					return 1; // token depois de DefRotulo invalido
+				}
+			} else {
+				return 0;
+			}
+		}
+		else if ((linha[i]->tipo == Nome || linha[i]->tipo == Decimal || linha[i]->tipo == Hexadecimal) && i == 0) {
+			return 1; //Esses tokens não podem estar no inicio de uma frase
 		}
 	}
+	return 0;
 }
-*/
-
 
 int processarEntrada(char* entrada, unsigned tamanho){
 
@@ -272,8 +444,8 @@ int processarEntrada(char* entrada, unsigned tamanho){
    	char *aux;
     int linha_atual = 1;
     Token *temp;
-    //Token *linha_temp[10];
-    //int indice = 0;
+    Token *linha_temp[10];
+    int indice = 0;
 
     for (int i = 0; entrada[i] != '\0'; i++){
         if ( (aux = Buffer(entrada[i])) ){
@@ -281,11 +453,25 @@ int processarEntrada(char* entrada, unsigned tamanho){
             if (!temp)
             	return 1;
             else {
-               	adicionarToken (*temp);
+            	linha_temp[indice++] = temp;
+            	if (checarErroGram(linha_temp, indice, 0)){
+            		fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
+            		return 1;
+            	}
             }
         }
-    if (entrada[i] == '\n')
-        linha_atual++;   
+	    if (entrada[i] == '\n'){
+	        if (checarErroGram(linha_temp, indice, 1)){
+				fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
+				return 1;
+			} else {
+				for (int j = 0; j < indice; j++){
+					adicionarToken (*linha_temp[j]);
+				}
+			}
+			indice = 0;
+	        linha_atual++; 
+		}
 	}
-    return 0;
+	return 0;
 }

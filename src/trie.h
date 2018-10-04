@@ -16,6 +16,13 @@ Token *buscarTrie(TRIENODE *raiz, char *palavra, unsigned linha);
 void imprimirTrie(TRIENODE *raiz);
 
 
-
+int checarNome (Token *tok);
+int checarInstrucao (Token *tok);
+int checarDiretiva (Token *tok);
+int checarDec1_1023 (Token *tok);
+int checarHexDec0_1023 (Token *tok);
+int checarHexDec0_MAX (Token *tok);
+int checarHexDecMIN_MAX (Token *tok);
+int checarVazio (Token *tok);
 
 #endif  
