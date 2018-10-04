@@ -1,0 +1,939 @@
+cat /mnt/d/proj404/aux/main1.c > /mnt/d/proj404/src/main.c
+gcc -std=c99 -Wall -O2 -o /mnt/d/proj404/bin/montador.x /mnt/d/proj404/src/*.c -lm
+ ------ Resultado de /mnt/d/proj404/saidas/arq00.res -------
+Lista de tokens
+Token 0
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor1:"
+	Linha: 1
+Token 1
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor2:"
+	Linha: 2
+Token 2
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 2
+Token 3
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x10"
+	Linha: 2
+Token 4
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor3:"
+	Linha: 3
+Token 5
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 3
+Token 6
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 3
+Token 7
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 5
+Token 8
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 5
+Token 9
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 6
+Token 10
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 6
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq01.res -------
+ERRO LEXICO: palavra inválida na linha 2!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq02.res -------
+ERRO LEXICO: palavra inválida na linha 5!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq03.res -------
+ERRO LEXICO: palavra inválida na linha 4!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq04.res -------
+ERRO LEXICO: palavra inválida na linha 4!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq05.res -------
+ERRO LEXICO: palavra inválida na linha 1!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq06.res -------
+ERRO LEXICO: palavra inválida na linha 5!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq07.res -------
+ERRO LEXICO: palavra inválida na linha 2!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq08.res -------
+ERRO LEXICO: palavra inválida na linha 3!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq09.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 2
+Token 1
+	Tipo: 1005 (Nome)
+	Palavra: "default"
+	Linha: 2
+Token 2
+	Tipo: 1004 (Decimal)
+	Palavra: "16"
+	Linha: 2
+Token 3
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_0:"
+	Linha: 5
+Token 4
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 5
+Token 5
+	Tipo: 1005 (Nome)
+	Palavra: "default"
+	Linha: 5
+Token 6
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_1:"
+	Linha: 6
+Token 7
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 6
+Token 8
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x123"
+	Linha: 6
+Token 9
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 9
+Token 10
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 9
+Token 11
+	Tipo: 1000 (Instrucao)
+	Palavra: "ld"
+	Linha: 10
+Token 12
+	Tipo: 1005 (Nome)
+	Palavra: "var_1"
+	Linha: 10
+Token 13
+	Tipo: 1000 (Instrucao)
+	Palavra: "sub"
+	Linha: 11
+Token 14
+	Tipo: 1005 (Nome)
+	Palavra: "var_0"
+	Linha: 11
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq10.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 2
+Token 1
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x30"
+	Linha: 2
+Token 2
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x40"
+	Linha: 2
+Token 3
+	Tipo: 1004 (Decimal)
+	Palavra: "100"
+	Linha: 2
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq11.res -------
+Lista de tokens
+Token 0
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var:"
+	Linha: 1
+Token 1
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 1
+Token 2
+	Tipo: 1004 (Decimal)
+	Palavra: "100"
+	Linha: 1
+Token 3
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 3
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq12.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 1
+Token 1
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x000"
+	Linha: 1
+Token 2
+	Tipo: 1005 (Nome)
+	Palavra: "loaddi"
+	Linha: 2
+Token 3
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x4ab"
+	Linha: 2
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq13.res -------
+ERRO LEXICO: palavra inválida na linha 1!
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq14.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 1
+Token 1
+	Tipo: 1004 (Decimal)
+	Palavra: "15"
+	Linha: 1
+Token 2
+	Tipo: 1001 (Diretiva)
+	Palavra: ".align"
+	Linha: 1
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq15.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 1
+Token 1
+	Tipo: 1004 (Decimal)
+	Palavra: "1000000"
+	Linha: 1
+Token 2
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x10"
+	Linha: 1
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq16.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 1
+Token 1
+	Tipo: 1005 (Nome)
+	Palavra: "vinte"
+	Linha: 1
+Token 2
+	Tipo: 1004 (Decimal)
+	Palavra: "20"
+	Linha: 1
+Token 3
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 2
+Token 4
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x300"
+	Linha: 2
+Token 5
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 3
+Token 6
+	Tipo: 1004 (Decimal)
+	Palavra: "50"
+	Linha: 3
+Token 7
+	Tipo: 1005 (Nome)
+	Palavra: "vinte"
+	Linha: 3
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq17.res -------
+Lista de tokens
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq18.res -------
+Lista de tokens
+Token 0
+	Tipo: 1000 (Instrucao)
+	Palavra: "add"
+	Linha: 2
+Token 1
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 2
+Token 2
+	Tipo: 1000 (Instrucao)
+	Palavra: "add"
+	Linha: 3
+Token 3
+	Tipo: 1005 (Nome)
+	Palavra: "k"
+	Linha: 3
+Token 4
+	Tipo: 1000 (Instrucao)
+	Palavra: "sub"
+	Linha: 4
+Token 5
+	Tipo: 1004 (Decimal)
+	Palavra: "15"
+	Linha: 4
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq19.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 1
+Token 1
+	Tipo: 1004 (Decimal)
+	Palavra: "0"
+	Linha: 1
+Token 2
+	Tipo: 1000 (Instrucao)
+	Palavra: "ld"
+	Linha: 2
+Token 3
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x10"
+	Linha: 2
+Token 4
+	Tipo: 1000 (Instrucao)
+	Palavra: "add"
+	Linha: 3
+Token 5
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 3
+Token 6
+	Tipo: 1000 (Instrucao)
+	Palavra: "sub"
+	Linha: 4
+Token 7
+	Tipo: 1004 (Decimal)
+	Palavra: "5"
+	Linha: 4
+Token 8
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_desalinhada:"
+	Linha: 6
+Token 9
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 7
+Token 10
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x20"
+	Linha: 7
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq20.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 1
+Token 1
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 1
+Token 2
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 2
+Token 3
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 2
+Token 4
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 2
+Token 5
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 4
+Token 6
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x200"
+	Linha: 4
+Token 7
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 5
+Token 8
+	Tipo: 1004 (Decimal)
+	Palavra: "15"
+	Linha: 5
+Token 9
+	Tipo: 1004 (Decimal)
+	Palavra: "20"
+	Linha: 5
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq21.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 1
+Token 1
+	Tipo: 1005 (Nome)
+	Palavra: "trezentos"
+	Linha: 1
+Token 2
+	Tipo: 1004 (Decimal)
+	Palavra: "300"
+	Linha: 1
+Token 3
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 3
+Token 4
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x300"
+	Linha: 3
+Token 5
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "um:"
+	Linha: 4
+Token 6
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 4
+Token 7
+	Tipo: 1004 (Decimal)
+	Palavra: "1"
+	Linha: 4
+Token 8
+	Tipo: 1001 (Diretiva)
+	Palavra: ".align"
+	Linha: 6
+Token 9
+	Tipo: 1004 (Decimal)
+	Palavra: "16"
+	Linha: 6
+Token 10
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor:"
+	Linha: 7
+Token 11
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 7
+Token 12
+	Tipo: 1004 (Decimal)
+	Palavra: "15"
+	Linha: 7
+Token 13
+	Tipo: 1005 (Nome)
+	Palavra: "trezentos"
+	Linha: 7
+Token 14
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 9
+Token 15
+	Tipo: 1004 (Decimal)
+	Palavra: "0"
+	Linha: 9
+Token 16
+	Tipo: 1000 (Instrucao)
+	Palavra: "ld"
+	Linha: 10
+Token 17
+	Tipo: 1005 (Nome)
+	Palavra: "vetor"
+	Linha: 10
+Token 18
+	Tipo: 1000 (Instrucao)
+	Palavra: "add"
+	Linha: 11
+Token 19
+	Tipo: 1005 (Nome)
+	Palavra: "um"
+	Linha: 11
+Token 20
+	Tipo: 1000 (Instrucao)
+	Palavra: "store"
+	Linha: 12
+Token 21
+	Tipo: 1005 (Nome)
+	Palavra: "vetor"
+	Linha: 12
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq22.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 1
+Token 1
+	Tipo: 1005 (Nome)
+	Palavra: "hex"
+	Linha: 1
+Token 2
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x64"
+	Linha: 1
+Token 3
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 2
+Token 4
+	Tipo: 1005 (Nome)
+	Palavra: "dec"
+	Linha: 2
+Token 5
+	Tipo: 1004 (Decimal)
+	Palavra: "100"
+	Linha: 2
+Token 6
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 4
+Token 7
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x000"
+	Linha: 4
+Token 8
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor1:"
+	Linha: 5
+Token 9
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 6
+Token 10
+	Tipo: 1004 (Decimal)
+	Palavra: "20"
+	Linha: 6
+Token 11
+	Tipo: 1005 (Nome)
+	Palavra: "hex"
+	Linha: 6
+Token 12
+	Tipo: 1001 (Diretiva)
+	Palavra: ".align"
+	Linha: 7
+Token 13
+	Tipo: 1004 (Decimal)
+	Palavra: "32"
+	Linha: 7
+Token 14
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "vetor2:"
+	Linha: 8
+Token 15
+	Tipo: 1001 (Diretiva)
+	Palavra: ".wfill"
+	Linha: 9
+Token 16
+	Tipo: 1004 (Decimal)
+	Palavra: "20"
+	Linha: 9
+Token 17
+	Tipo: 1005 (Nome)
+	Palavra: "dec"
+	Linha: 9
+----------------------------
+
+
+ ------ Resultado de /mnt/d/proj404/saidas/arq23.res -------
+Lista de tokens
+Token 0
+	Tipo: 1001 (Diretiva)
+	Palavra: ".set"
+	Linha: 1
+Token 1
+	Tipo: 1005 (Nome)
+	Palavra: "numero_um"
+	Linha: 1
+Token 2
+	Tipo: 1004 (Decimal)
+	Palavra: "1"
+	Linha: 1
+Token 3
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 2
+Token 4
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x300"
+	Linha: 2
+Token 5
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "_um:"
+	Linha: 4
+Token 6
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 4
+Token 7
+	Tipo: 1005 (Nome)
+	Palavra: "numero_um"
+	Linha: 4
+Token 8
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_1:"
+	Linha: 6
+Token 9
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 6
+Token 10
+	Tipo: 1004 (Decimal)
+	Palavra: "10"
+	Linha: 6
+Token 11
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_2:"
+	Linha: 7
+Token 12
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 7
+Token 13
+	Tipo: 1004 (Decimal)
+	Palavra: "100"
+	Linha: 7
+Token 14
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "var_3:"
+	Linha: 8
+Token 15
+	Tipo: 1001 (Diretiva)
+	Palavra: ".word"
+	Linha: 8
+Token 16
+	Tipo: 1004 (Decimal)
+	Palavra: "1000"
+	Linha: 8
+Token 17
+	Tipo: 1001 (Diretiva)
+	Palavra: ".org"
+	Linha: 10
+Token 18
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 10
+Token 19
+	Tipo: 1002 (Definicao Rotulo)
+	Palavra: "loop:"
+	Linha: 11
+Token 20
+	Tipo: 1000 (Instrucao)
+	Palavra: "ld"
+	Linha: 12
+Token 21
+	Tipo: 1005 (Nome)
+	Palavra: "var_1"
+	Linha: 12
+Token 22
+	Tipo: 1000 (Instrucao)
+	Palavra: "ldinv"
+	Linha: 13
+Token 23
+	Tipo: 1005 (Nome)
+	Palavra: "var_2"
+	Linha: 13
+Token 24
+	Tipo: 1000 (Instrucao)
+	Palavra: "ldabs"
+	Linha: 14
+Token 25
+	Tipo: 1005 (Nome)
+	Palavra: "var_3"
+	Linha: 14
+Token 26
+	Tipo: 1000 (Instrucao)
+	Palavra: "add"
+	Linha: 15
+Token 27
+	Tipo: 1004 (Decimal)
+	Palavra: "100"
+	Linha: 15
+Token 28
+	Tipo: 1000 (Instrucao)
+	Palavra: "sub"
+	Linha: 16
+Token 29
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 16
+Token 30
+	Tipo: 1000 (Instrucao)
+	Palavra: "addabs"
+	Linha: 17
+Token 31
+	Tipo: 1005 (Nome)
+	Palavra: "_um"
+	Linha: 17
+Token 32
+	Tipo: 1000 (Instrucao)
+	Palavra: "subabs"
+	Linha: 18
+Token 33
+	Tipo: 1005 (Nome)
+	Palavra: "_um"
+	Linha: 18
+Token 34
+	Tipo: 1000 (Instrucao)
+	Palavra: "ldmq"
+	Linha: 19
+Token 35
+	Tipo: 1000 (Instrucao)
+	Palavra: "ldmqmx"
+	Linha: 20
+Token 36
+	Tipo: 1005 (Nome)
+	Palavra: "_um"
+	Linha: 20
+Token 37
+	Tipo: 1000 (Instrucao)
+	Palavra: "mult"
+	Linha: 21
+Token 38
+	Tipo: 1005 (Nome)
+	Palavra: "var_2"
+	Linha: 21
+Token 39
+	Tipo: 1000 (Instrucao)
+	Palavra: "div"
+	Linha: 22
+Token 40
+	Tipo: 1005 (Nome)
+	Palavra: "var_3"
+	Linha: 22
+Token 41
+	Tipo: 1000 (Instrucao)
+	Palavra: "jump"
+	Linha: 23
+Token 42
+	Tipo: 1005 (Nome)
+	Palavra: "loop"
+	Linha: 23
+Token 43
+	Tipo: 1000 (Instrucao)
+	Palavra: "jumpl"
+	Linha: 24
+Token 44
+	Tipo: 1005 (Nome)
+	Palavra: "loop"
+	Linha: 24
+Token 45
+	Tipo: 1000 (Instrucao)
+	Palavra: "jumpr"
+	Linha: 25
+Token 46
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 25
+Token 47
+	Tipo: 1000 (Instrucao)
+	Palavra: "storal"
+	Linha: 26
+Token 48
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x100"
+	Linha: 26
+Token 49
+	Tipo: 1000 (Instrucao)
+	Palavra: "storar"
+	Linha: 27
+Token 50
+	Tipo: 1003 (Hexadecimal)
+	Palavra: "0x101"
+	Linha: 27
+Token 51
+	Tipo: 1000 (Instrucao)
+	Palavra: "lsh"
+	Linha: 28
+Token 52
+	Tipo: 1000 (Instrucao)
+	Palavra: "rsh"
+	Linha: 29
+Token 53
+	Tipo: 1000 (Instrucao)
+	Palavra: "store"
+	Linha: 30
+Token 54
+	Tipo: 1005 (Nome)
+	Palavra: "var_3"
+	Linha: 30
+----------------------------
+
+
+------------------- TESTE: 00  -------------------------
+Comparando saida 00 com arq00.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 00: SUCESSO ***
+
+------------------- TESTE: 01  -------------------------
+Comparando saida 01 com arq01.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 01: SUCESSO ***
+
+------------------- TESTE: 02  -------------------------
+Comparando saida 02 com arq02.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 02: SUCESSO ***
+
+------------------- TESTE: 03  -------------------------
+Comparando saida 03 com arq03.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 03: SUCESSO ***
+
+------------------- TESTE: 04  -------------------------
+Comparando saida 04 com arq04.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 04: SUCESSO ***
+
+------------------- TESTE: 05  -------------------------
+Comparando saida 05 com arq05.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 05: SUCESSO ***
+
+------------------- TESTE: 06  -------------------------
+Comparando saida 06 com arq06.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 06: SUCESSO ***
+
+------------------- TESTE: 07  -------------------------
+Comparando saida 07 com arq07.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 07: SUCESSO ***
+
+------------------- TESTE: 08  -------------------------
+Comparando saida 08 com arq08.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 08: SUCESSO ***
+
+------------------- TESTE: 09  -------------------------
+Comparando saida 09 com arq09.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 09: SUCESSO ***
+
+------------------- TESTE: 10  -------------------------
+Comparando saida 10 com arq10.parte1.res. Abaixo as diferenças: 
+ 1 Lista de tokens |  ERRO GRAMATICAL: palavra na linha 2!
+*** TESTE 10: ERRO ***
+
+------------------- TESTE: 11  -------------------------
+Comparando saida 11 com arq11.parte1.res. Abaixo as diferenças: 
+ 1 Lista de tokens |  ERRO GRAMATICAL: palavra na linha 3!
+*** TESTE 11: ERRO ***
+
+------------------- TESTE: 12  -------------------------
+Comparando saida 12 com arq12.parte1.res. Abaixo as diferenças: 
+ 1 Lista de tokens |  ERRO GRAMATICAL: palavra na linha 2!
+*** TESTE 12: ERRO ***
+
+------------------- TESTE: 13  -------------------------
+Comparando saida 13 com arq13.parte1.res. Abaixo as diferenças: 
+ 1 ERRO LEXICO: palavra inválida na linha 1! |  ERRO GRAMATICAL: palavra na linha 1!
+*** TESTE 13: ERRO ***
+
+------------------- TESTE: 14  -------------------------
+Comparando saida 14 com arq14.parte1.res. Abaixo as diferenças: 
+ 1 Lista de tokens |  ERRO GRAMATICAL: palavra na linha 1!
+*** TESTE 14: ERRO ***
+
+------------------- TESTE: 15  -------------------------
+Comparando saida 15 com arq15.parte1.res. Abaixo as diferenças: 
+ 1 Lista de tokens |  ERRO GRAMATICAL: palavra na linha 1!
+*** TESTE 15: ERRO ***
+
+------------------- TESTE: 16  -------------------------
+Comparando saida 16 com arq16.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 16: SUCESSO ***
+
+------------------- TESTE: 17  -------------------------
+Comparando saida 17 com arq17.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 17: SUCESSO ***
+
+------------------- TESTE: 18  -------------------------
+Comparando saida 18 com arq18.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 18: SUCESSO ***
+
+------------------- TESTE: 19  -------------------------
+Comparando saida 19 com arq19.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 19: SUCESSO ***
+
+------------------- TESTE: 20  -------------------------
+Comparando saida 20 com arq20.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 20: SUCESSO ***
+
+------------------- TESTE: 21  -------------------------
+Comparando saida 21 com arq21.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 21: SUCESSO ***
+
+------------------- TESTE: 22  -------------------------
+Comparando saida 22 com arq22.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 22: SUCESSO ***
+
+------------------- TESTE: 23  -------------------------
+Comparando saida 23 com arq23.parte1.res. Abaixo as diferenças: 
+NENHUMA DIFERENÇA! PARABÉNS!
+*** TESTE 23: SUCESSO ***
+
+Finalizado testes da parte 1

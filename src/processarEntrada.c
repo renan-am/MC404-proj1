@@ -26,6 +26,20 @@
         * 0 caso não haja erro.         (Caso não haja erro, na parte 1, ao retornar desta função, a lista de Tokens (adicionados utilizando a função adicionarToken()) é impressa)
 */
 
+Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
+    int tam = strlen(palavra);
+    
+    Token *temp = malloc(sizeof(Token));
+    
+    temp->palavra = malloc((tam+1)*sizeof(char));
+    strcpy(temp->palavra, palavra);
+
+    temp->tipo = tipo;
+    temp->linha = linha;
+
+    return temp;
+}
+
 char *Buffer (char input){
     static char temp[4097];
     static int indice = 0;
@@ -125,13 +139,13 @@ TRIENODE *inicializarTrie() {
 
         for (int i = 0; i < 26; i++){
             if (!strcmp(elementos[i][0], "Instrucao"))
-                inserirTrie(raiz, Instrucao, elementos[i][1]);
+                inserirTrie(raiz, elementos[i][1], novoToken(elementos[i][1], Instrucao, 0), novoARG(elementos[i][1]));
             else if (!strcmp(elementos[i][0], "Diretiva"))
-                inserirTrie(raiz, Diretiva, elementos[i][1]);
+                inserirTrie(raiz, elementos[i][1], novoToken(elementos[i][1], Diretiva, 0), novoARG(elementos[i][1]));
             else if (!strcmp(elementos[i][0], "Hexadecimal"))
-                inserirTrie(raiz, Hexadecimal, elementos[i][1]);
+                inserirTrie(raiz, elementos[i][1], novoToken(elementos[i][1], Hexadecimal, 0), NULL);
             else if (!strcmp(elementos[i][0], "Decimal"))
-                inserirTrie(raiz, Decimal, elementos[i][1]);
+                inserirTrie(raiz, elementos[i][1], novoToken(elementos[i][1], Decimal, 0), NULL);
         }
 
         trie_inicializada = 1;
@@ -141,19 +155,7 @@ TRIENODE *inicializarTrie() {
    return NULL;
 }
 
-Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
-    int tam = strlen(palavra);
-    
-    Token *temp = malloc(sizeof(Token));
-    
-    temp->palavra = malloc((tam+1)*sizeof(char));
-    strcpy(temp->palavra, palavra);
 
-    temp->tipo = tipo;
-    temp->linha = linha;
-
-    return temp;
-}
 
 //retorna 1 se for Hexadecimal, 0 se não for
 int checarHex(char *hex){
@@ -187,7 +189,7 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
         return NULL; //Erro: Palavra Vazia
     }
 
-    if ( (aux = buscarTrie(raiz, palavra, linha)) ){ //palavra é Diretiva, Instrucao, Hexadecimal ou Decimal
+    if ( (aux = buscarTrieToken(raiz, palavra, linha)) ){ //palavra é Diretiva, Instrucao, Hexadecimal ou Decimal
         if (aux->tipo == Hexadecimal){
             if (checarHex(aux->palavra))
                 return aux;
@@ -250,30 +252,44 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     return NULL; //Codigo não deveria chegar aqui
 }
 
-/*
-int checarErroGram(Token *linha, int tam){
-	int flag_hex = 0, flag_dec = 0, flag_rot
 
+int checarErroGram(Token *linha, int tam, int fim){
+	//int flag_hex = 0, flag_dec = 0, flag_rot
 
+	int (*func)(Token *x); //Ponteiro para uma função que retorna int, e recebe ponteiro de Token 
+	
+	ARG fila[10];
+	int fila_pos = 0;
+	int fila_tam = 0;
+	int flag = 0;
+	
 	for (int i = 0; i < tam; i++){
-		switch (linha[i]->tipo){
-			case Instrucao:
-				
+		if (fila_pos < fila_tam){
+			for (int j = 0; j < fila[fila_pos].tam_vet1; j++){
+				func = fila[fila_pos]->vet1[j]; //atribui a função em vet1[j] para func
+				if ( (*(func))(linha[i]) == 0){ //roda todas as funções de teste em vet1 (vetor de funções da struct ARG)
+					flag = 1;
+				}
+			}
+
+			if (flag)
+				printf ("Oi\n");
 		}
+
 	}
 }
-*/
+
 
 
 int processarEntrada(char* entrada, unsigned tamanho){
 
     TRIENODE *raiz = inicializarTrie();
-
+/*
    	char *aux;
     int linha_atual = 1;
     Token *temp;
-    //Token *linha_temp[10];
-    //int indice = 0;
+    Token *linha_temp[10];
+    int indice = 0;
 
     for (int i = 0; entrada[i] != '\0'; i++){
         if ( (aux = Buffer(entrada[i])) ){
@@ -287,5 +303,30 @@ int processarEntrada(char* entrada, unsigned tamanho){
     if (entrada[i] == '\n')
         linha_atual++;   
 	}
+
+*/
+
+
+   
+
+    Token *tok = novoToken(".wfill", Diretiva, 0);
+
+    ARG *fila[10];
+	int fila_pos = 0;
+	int fila_tam = 0;
+	
+	ARG teste;
+	teste.vet1[0] = &checarDiretiva;
+
+	fila[0] = &teste;
+
+	int (*func)(Token *x); 
+	func = teste.vet1[0];
+
+	if ( (*(fila[0]->vet1[0]))(tok) ){ //roda todas as funções de teste em vet1 (vetor de funções da struct ARG)
+		printf("Não é diretiva\n");
+	}
+
+
     return 0;
 }
