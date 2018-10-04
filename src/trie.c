@@ -23,7 +23,6 @@ typedef struct ARG{
 	int tam_vet2;
 
 	int (*vet1[10])(Token* x);
-	int (*vet2[10])(Token* x);
 
 } ARG;
 
@@ -68,123 +67,123 @@ ARG *novoARG(char *palavra){
 	aux->tam_vet1 = 0;
 	aux->tam_vet2 = 0;
 
-	if (strcmp(palavra, ".set")){
+	if (!strcmp(palavra, ".set")){
 		aux->qtd_arg = 2;
 		aux->vet1[0] = &checarNome;
 		aux->tam_vet1 = 1;
-		aux->vet2[0] = &checarHexDec0_MAX;
+		aux->vet1[5] = &checarHexDec0_MAX;
 		aux->tam_vet2 = 1;
 	}
-	else if (strcmp(palavra, ".org")){
+	else if (!strcmp(palavra, ".org")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->tam_vet1 = 1;
 	}
-	else if (strcmp(palavra, ".align")){
+	else if (!strcmp(palavra, ".align")){
 		aux->vet1[0] = &checarDec1_1023;
 		aux->tam_vet1 = 1;
 	}
-	else if (strcmp(palavra, ".wfill")){
+	else if (!strcmp(palavra, ".wfill")){
 		aux->qtd_arg = 2;
 		aux->vet1[0] = &checarDec1_1023;
 		aux->tam_vet1 = 1;
-		aux->vet2[0] = &checarHexDecMIN_MAX;
-		aux->vet2[1] = &checarNome;
+		aux->vet1[5] = &checarHexDecMIN_MAX;
+		aux->vet1[6] = &checarNome;
 		aux->tam_vet2 = 2;
 	}
-	else if (strcmp(palavra, ".word")){
+	else if (!strcmp(palavra, ".word")){
 		aux->vet1[0] = &checarHexDecMIN_MAX;
 		aux->vet1[1] = &checarNome;
-		aux->tam_vet2 = 2;
+		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "ld")){
+	else if (!strcmp(palavra, "ld")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "ldinv")){
+	else if (!strcmp(palavra, "ldinv")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "ldabs")){
+	else if (!strcmp(palavra, "ldabs")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "ldmq")){
+	else if (!strcmp(palavra, "ldmq")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "ldmqmx")){
+	else if (!strcmp(palavra, "ldmqmx")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "store")){
+	else if (!strcmp(palavra, "store")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "jump")){
+	else if (!strcmp(palavra, "jump")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "jumpl")){
+	else if (!strcmp(palavra, "jumpl")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "jumpr")){
+	else if (!strcmp(palavra, "jumpr")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "add")){
+	else if (!strcmp(palavra, "add")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "addabs")){
+	else if (!strcmp(palavra, "addabs")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "sub")){
+	else if (!strcmp(palavra, "sub")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "subabs")){
+	else if (!strcmp(palavra, "subabs")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "mult")){
+	else if (!strcmp(palavra, "mult")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "div")){
+	else if (!strcmp(palavra, "div")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "lsh")){
+	else if (!strcmp(palavra, "lsh")){
 		aux->vet1[0] = &checarVazio;
 		aux->tam_vet1 = 1;
 	}
-	else if (strcmp(palavra, "rsh")){
+	else if (!strcmp(palavra, "rsh")){
 		aux->vet1[0] = &checarVazio;
 		aux->tam_vet1 = 1;
 	}
-	else if (strcmp(palavra, "storal")){
+	else if (!strcmp(palavra, "storal")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
 	}
-	else if (strcmp(palavra, "storar")){
+	else if (!strcmp(palavra, "storar")){
 		aux->vet1[0] = &checarHexDec0_1023;
 		aux->vet1[1] = &checarNome;
 		aux->tam_vet1 = 2;
@@ -289,7 +288,7 @@ ARG *buscarTrieArg (TRIENODE *raiz, Token *token){
 	} else if (token->tipo == DefRotulo) {
 		arg->vet1[0] = &checarDiretiva;
 		arg->vet1[1] = &checarInstrucao;
-		arg->tam_vet1 = 1;
+		arg->tam_vet1 = 2;
 		return arg;
 	}
 
@@ -314,7 +313,16 @@ ARG *buscarTrieArg (TRIENODE *raiz, Token *token){
 	}
 
 	if (aux->forma_palavra && aux->arg != NULL){
-		return aux->arg;
+		arg->qtd_arg = aux->arg->qtd_arg;
+		arg->tam_vet1 = aux->arg->tam_vet1;
+		arg->tam_vet2 = aux->arg->tam_vet2;
+
+		
+
+		for (int k = 0; k < aux->arg->tam_vet1; k++)
+					arg->vet1[k] = aux->arg->vet1[k];
+		
+		return arg;
 	}
 
 	return NULL;
@@ -331,19 +339,22 @@ void imprimirTrie(TRIENODE *raiz){
 
 
 int checarNome (Token *tok){
+	
 	if (tok && tok->tipo == Nome)
 		return 0;
 	return 1;
 }
 
 int checarInstrucao (Token *tok){
+	
 	if (tok && tok->tipo == Instrucao)
 		return 0;
 	return 1;
 }
 
 int checarDiretiva (Token *tok){
-	printf("%s %d", tok->palavra, tok->tipo);
+	
+	//printf("%s %d", tok->palavra, tok->tipo);
 	if (tok && tok->tipo == Diretiva)
 		return 0;
 	return 1;
@@ -351,6 +362,7 @@ int checarDiretiva (Token *tok){
 
 
 int checarDec1_1023 (Token *tok){
+	
 	if (tok && tok->tipo != Decimal)
 		return 1;
 	char *p;
@@ -362,6 +374,7 @@ int checarDec1_1023 (Token *tok){
 }
 
 int checarHexDec0_1023 (Token *tok){
+	
 	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
 		return 1;
 	char *p;
@@ -373,6 +386,7 @@ int checarHexDec0_1023 (Token *tok){
 }
 
 int checarHexDec0_MAX (Token *tok){
+	
 	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
 		return 1;
 	char *p;
@@ -384,6 +398,7 @@ int checarHexDec0_MAX (Token *tok){
 }
 
 int checarHexDecMIN_MAX (Token *tok){
+	
 	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
 		return 1;
 	char *p;

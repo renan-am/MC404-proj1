@@ -253,30 +253,53 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
 }
 
 
-int checarErroGram(Token *linha, int tam, int fim){
+void checarErroGram(TRIENODE *raiz, Token **linha, int tam, int fim){
 	//int flag_hex = 0, flag_dec = 0, flag_rot
 
 	int (*func)(Token *x); //Ponteiro para uma função que retorna int, e recebe ponteiro de Token 
 	
-	ARG fila[10];
+	ARG *fila[100];
 	int fila_pos = 0;
 	int fila_tam = 0;
 	int flag = 0;
-	
+	int fix = 0;
+
+	//printf("\n NOVA LINHA \n");
 	for (int i = 0; i < tam; i++){
+		flag = 0;
+		//printf("Testando Palavra %s\n", linha[i]->palavra);
 		if (fila_pos < fila_tam){
-			for (int j = 0; j < fila[fila_pos].tam_vet1; j++){
+			for (int j = 0 + fix; j < fila[fila_pos]->tam_vet1; j++){
 				func = fila[fila_pos]->vet1[j]; //atribui a função em vet1[j] para func
 				if ( (*(func))(linha[i]) == 0){ //roda todas as funções de teste em vet1 (vetor de funções da struct ARG)
 					flag = 1;
 				}
 			}
+			if (flag){
+				//printf ("Tudo certo com a palavra %s\n", linha[i]->palavra);
+			}
+			else
+				printf ("ERRO: %s, tipo %d \n", linha[i]->palavra, linha[i]->tipo);
 
-			if (flag)
-				printf ("Oi\n");
+			if (fila[fila_pos]->qtd_arg == 2){
+				//printf ("Ocorreu vet1 = %d  vet2 = %d\n", fila[fila_pos]->tam_vet1, fila[fila_pos]->tam_vet2);
+				fila[fila_pos]->qtd_arg = 1;
+				fila[fila_pos]->tam_vet1 = fila[fila_pos]->tam_vet2 + 5;
+				fix = 5;
+			
+			} else {
+				fix = 0;
+				fila_pos++;
+			}
+
 		}
 
+		//printf ("Tem isso fila_pos %d = %s\n", fila_tam, linha[i]->palavra);
+		fila[fila_tam++] = buscarTrieArg(raiz, linha[i]);
+
+
 	}
+	//printf("SAIU\n");
 }
 
 
@@ -284,7 +307,7 @@ int checarErroGram(Token *linha, int tam, int fim){
 int processarEntrada(char* entrada, unsigned tamanho){
 
     TRIENODE *raiz = inicializarTrie();
-/*
+
    	char *aux;
     int linha_atual = 1;
     Token *temp;
@@ -297,18 +320,24 @@ int processarEntrada(char* entrada, unsigned tamanho){
             if (!temp)
             	return 1;
             else {
-               	adicionarToken (*temp);
+            	linha_temp[indice++] = temp;
+            	checarErroGram(raiz, linha_temp, indice, 0);
+               	//adicionarToken (*temp);
             }
         }
-    if (entrada[i] == '\n')
-        linha_atual++;   
+	    if (entrada[i] == '\n'){
+	    	checarErroGram(raiz, linha_temp, indice, 1);
+	    	
+	    	indice = 0;
+	        linha_atual++;   
+	    }
 	}
 
-*/
+
 
 
    
-
+/*
     Token *tok = novoToken(".wfill", Diretiva, 0);
 
     ARG *fila[10];
@@ -326,7 +355,7 @@ int processarEntrada(char* entrada, unsigned tamanho){
 	if ( (*(fila[0]->vet1[0]))(tok) ){ //roda todas as funções de teste em vet1 (vetor de funções da struct ARG)
 		printf("Não é diretiva\n");
 	}
-
+*/
 
     return 0;
 }

@@ -11,7 +11,6 @@ typedef struct ARG{
 	int tam_vet2;
 
 	int (*vet1[5])(Token* x);
-	int (*vet2[5])(Token* x);
 
 } ARG;
 
