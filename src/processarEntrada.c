@@ -83,11 +83,11 @@ char *Buffer (char input){
     return NULL;
 }
 
-NODE *inicializarTrie() {
+TRIENODE *inicializarTrie() {
     static int trie_inicializada = 0;
     
     if (!trie_inicializada){
-        NODE *raiz = malloc(sizeof(NODE));
+        TRIENODE *raiz = malloc(sizeof(TRIENODE));
         raiz->nome = NULL;
         raiz->token = NULL;
 
@@ -154,24 +154,7 @@ Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
 
     return temp;
 }
-/*
-int checarNumero(char *palavra){
-    int tam = strlen(palavra);
-    int hex = 0;
-    int indice = 0;
-    if (tam ==2 && palavra[0] == '0' && palavra[1] == 'x'){
-        return -1;
-    } else if (tam > 2 && palavra[0] == '0' && palavra[1] == 'x') {
-        hex = 1;
-        indice = 3;
-    }
-    
 
-    for (; indice < tam; indice++){
-        if (palavra[0] >= 48 && palavra[0] <= 57)
-    }
-}
-*/
 //retorna 1 se for Hexadecimal, 0 se não for
 int checarHex(char *hex){
     int tam = strlen(hex);
@@ -196,10 +179,7 @@ int checarDec(char *dec){
     return 1;
 }
 
-    // fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
-
-
-Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
+Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     Token *aux = NULL;
     int tam = strlen(palavra);
     if (tam == 0){
@@ -229,7 +209,7 @@ Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
         if (palavra[tam-1] == ':'){
         	if (palavra[0] == '.'){
 	            fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
-	            return NULL; // Erro Lexico: ':' no meio de um nome
+	            return NULL; // Erro Lexico: '.' no inicio de um nome
 	    	}
             for (int i = 0; i < tam-1; i++){
                 if (
@@ -237,19 +217,18 @@ Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
                         (palavra[i] >= 48 && palavra[i] <= 57)  || 
                         (palavra[i] >= 97 && palavra[i] <= 122) || 
                         (palavra[i] >= 65 && palavra[i] <= 90)  || 
-                        (palavra[i] == '_') || 
-                        (palavra[i] == '.') 
+                        (palavra[i] == '_') 
                     )
                 ){
                     fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
-                    return NULL; // Erro Lexico: ':' no meio de um nome
+                    return NULL; // Erro Lexico: Símbolo invalido no meio de um nome
             	}
             }
             return novoToken (palavra, DefRotulo, linha);
         } else {
         	if (palavra[0] == '.'){
 	            fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
-	            return NULL; // Erro Lexico: ':' no meio de um nome
+	            return NULL; // Erro Lexico: '.' no começo de um nome
 	    	}
             for (int i = 0; i < tam; i++){
                 if (
@@ -257,12 +236,11 @@ Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
                         (palavra[i] >= 48 && palavra[i] <= 57)  || 
                         (palavra[i] >= 97 && palavra[i] <= 122) || 
                         (palavra[i] >= 65 && palavra[i] <= 90)  || 
-                        (palavra[i] == '_') || 
-                        (palavra[i] == '.') 
+                        (palavra[i] == '_') 
                     )
                 ){
                     fprintf(stderr, "ERRO LEXICO: palavra inválida na linha %d!\n", linha);
-                    return NULL; // Erro Lexico: ':' no meio de um nome
+                    return NULL; // Erro Lexico: Símbolo invalido no meio de um nome
                 }
             }
             return novoToken (palavra, Nome, linha);
@@ -272,47 +250,42 @@ Token *classificarPalavra(NODE *raiz, char *palavra, unsigned linha) {
     return NULL; //Codigo não deveria chegar aqui
 }
 
+/*
+int checarErroGram(Token *linha, int tam){
+	int flag_hex = 0, flag_dec = 0, flag_rot
 
-int processarEntrada(char* entrada, unsigned tamanho)
-{
 
-    NODE *raiz = inicializarTrie();
+	for (int i = 0; i < tam; i++){
+		switch (linha[i]->tipo){
+			case Instrucao:
+				
+		}
+	}
+}
+*/
 
-   
-    //printf ("%s\n", entrada);
-	char *aux;
+
+int processarEntrada(char* entrada, unsigned tamanho){
+
+    TRIENODE *raiz = inicializarTrie();
+
+   	char *aux;
     int linha_atual = 1;
-    //Token linha[10];
     Token *temp;
+    //Token *linha_temp[10];
+    //int indice = 0;
+
     for (int i = 0; entrada[i] != '\0'; i++){
         if ( (aux = Buffer(entrada[i])) ){
             temp = classificarPalavra(raiz, aux, linha_atual);
             if (!temp)
             	return 1;
-            else
-            	adicionarToken (*temp);
+            else {
+               	adicionarToken (*temp);
+            }
         }
     if (entrada[i] == '\n')
         linha_atual++;   
-    }
-
-
-
-/*
-    Token *aux = NULL;
-    char bus[50];
-    strcpy (bus, "0:");
-    aux = buscarTrie(raiz, bus, 0);
-    if (aux)
-        printf ("busca (%s): palavra = %s, tipo = %d\n", bus, aux->palavra, aux->tipo);
-    else
-        printf ("busca não encontrou (%s)\n", bus);
-*/
-
-
-    //printf("inseriu\n");
-
-    //imprimirTrie (raiz);
-
+	}
     return 0;
 }

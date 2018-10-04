@@ -6,11 +6,11 @@
 //a-z (0-25); . (26); _ (27); 0-9 (28)
 #define ALFABETO_TAM 29 //(a-z + _ + . + (0-9) ) 
 
-typedef struct NODE{
-	struct NODE *prox[ALFABETO_TAM];
+typedef struct TRIENODE{
+	struct TRIENODE *prox[ALFABETO_TAM];
 	int forma_palavra;
 	Token *token;
-} NODE;
+} TRIENODE;
 
 int getIndice(char alvo){
 	if (alvo >= 97 && alvo <= 122)
@@ -53,17 +53,17 @@ static Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
     return temp;
 }
 
-void inserirTrie (NODE *raiz, TipoDoToken tipo, char *palavra){
+void inserirTrie (TRIENODE *raiz, TipoDoToken tipo, char *palavra){
 	int tam = strlen(palavra);
 	int indice;
 
-	NODE *aux = raiz;
+	TRIENODE *aux = raiz;
 
 	for (int i = 0; i < tam; i++){
 		indice = getIndice(palavra[i]);
 		
 		if (!aux->prox[indice]){
-			NODE *temp = malloc (sizeof(NODE));
+			TRIENODE *temp = malloc (sizeof(TRIENODE));
 			temp->forma_palavra = 0;
 			temp->token = NULL;
 			
@@ -83,11 +83,11 @@ void inserirTrie (NODE *raiz, TipoDoToken tipo, char *palavra){
 	aux->token->tipo = tipo;
 }
 
-Token *buscarTrie(NODE *raiz, char *palavra, unsigned linha){
+Token *buscarTrie(TRIENODE *raiz, char *palavra, unsigned linha){
 	int tam = strlen(palavra);
 	int indice;
 
-	NODE *aux = raiz;
+	TRIENODE *aux = raiz;
 
 	for (int i = 0; i < tam; i++){
 		indice = getIndice(palavra[i]);
@@ -124,7 +124,7 @@ Token *buscarTrie(NODE *raiz, char *palavra, unsigned linha){
 
 
 
-void imprimirTrie(NODE *raiz){
+void imprimirTrie(TRIENODE *raiz){
 	for (int i = 0; i < ALFABETO_TAM; i++)
 		if (raiz->prox[i] != NULL)
 			imprimirTrie(raiz->prox[i]);

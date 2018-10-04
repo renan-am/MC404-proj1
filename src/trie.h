@@ -5,15 +5,15 @@
 #define ALFABETO_TAM 28 //(a-z + _ + .)
 
 
-typedef struct NODE{
+typedef struct TRIENODE{
 	char *nome;
-	struct NODE *prox[ALFABETO_TAM];
+	struct TRIENODE *prox[ALFABETO_TAM];
 	Token *token;
-} NODE;
+} TRIENODE;
 
-void inserirTrie (NODE *raiz, TipoDoToken tipo, char *palavra);
-Token *buscarTrie(NODE *raiz, char *palavra, unsigned linha);
-void imprimirTrie(NODE *raiz);
+void inserirTrie (TRIENODE *raiz, TipoDoToken tipo, char *palavra);
+Token *buscarTrie(TRIENODE *raiz, char *palavra, unsigned linha);
+void imprimirTrie(TRIENODE *raiz);
 
 
 
