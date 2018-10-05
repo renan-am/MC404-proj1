@@ -140,6 +140,12 @@ void deletarTrie (TRIENODE *raiz) {
 		if (raiz->prox[i] != NULL){
 			deletarTrie(raiz->prox[i]);
 			aux = raiz->prox[i];
+			if (aux->token){
+				if (aux->token->palavra){
+					free(aux->token->palavra);
+				}
+				free (aux->token);
+			}
 			free (aux);
 		}
 }

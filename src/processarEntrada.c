@@ -456,6 +456,7 @@ int processarEntrada(char* entrada, unsigned tamanho){
             		return 1;
             	}
             }
+            free(aux);
         }
 	    if (entrada[i] == '\n'){
 	        if (checarErroGram(linha_temp, indice, 1)){
@@ -472,5 +473,6 @@ int processarEntrada(char* entrada, unsigned tamanho){
 	}
 
 	deletarTrie(raiz);
+	free (raiz);
 	return 0;
 }
