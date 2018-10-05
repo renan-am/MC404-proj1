@@ -251,9 +251,6 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     return NULL; //Codigo não deveria chegar aqui
 }
 
-
-//return 1 = erro
-//return 0 = OK
 int checarErroGram(Token **linha, int tam, int fim){
 	
 	for (int i = 0; i < tam; i++){
@@ -473,5 +470,7 @@ int processarEntrada(char* entrada, unsigned tamanho){
 	        linha_atual++; 
 		}
 	}
+
+	deletarTrie(raiz);
 	return 0;
 }

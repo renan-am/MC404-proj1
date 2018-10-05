@@ -14,7 +14,7 @@ typedef struct TRIENODE{
 void inserirTrie (TRIENODE *raiz, TipoDoToken tipo, char *palavra);
 Token *buscarTrie(TRIENODE *raiz, char *palavra, unsigned linha);
 void imprimirTrie(TRIENODE *raiz);
-
+void deletarTrie (TRIENODE *raiz);
 
 int checarNome (Token *tok);
 int checarInstrucao (Token *tok);

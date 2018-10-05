@@ -133,7 +133,16 @@ void imprimirTrie(TRIENODE *raiz){
 		printf ("token = %s, tipo = %d\n", raiz->token->palavra, (raiz->token->tipo - 1000));
 }
 
+void deletarTrie (TRIENODE *raiz) {
+	TRIENODE *aux;
 
+	for (int i = 0; i < ALFABETO_TAM; i++)
+		if (raiz->prox[i] != NULL){
+			deletarTrie(raiz->prox[i]);
+			aux = raiz->prox[i];
+			free (aux);
+		}
+}
 
 
 
