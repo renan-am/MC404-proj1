@@ -26,18 +26,7 @@ int getIndice(char alvo){
 	else
 		return -1;
 }
-/*
-char getLetra(int i){
-	if (i >= 0 || i <= 25)
-		return (i + 'a');
-	else if (i == 26)
-		return '.';
-	else if (i == 27)
-		return '_';
-	else
-		return 0;
-}
-*/
+
 
 static Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
     int tam = strlen(palavra);
@@ -52,6 +41,8 @@ static Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha){
 
     return temp;
 }
+
+//Insere node e cria um token no final, para colocar no NODE
 
 void inserirTrie (TRIENODE *raiz, TipoDoToken tipo, char *palavra){
 	int tam = strlen(palavra);
@@ -83,6 +74,9 @@ void inserirTrie (TRIENODE *raiz, TipoDoToken tipo, char *palavra){
 	aux->token->tipo = tipo;
 }
 
+//Busca palavra e deterina se é uma diretiva ou instrução comparando com os elementos da arvore
+//Para decimal e Hexadecimal, foi inserido como exemplo "0" e "0x0", se os valores iniciais da palavra forem esses já classifica como dec/hex (precisa de um teste subsequente para determinar se tem caractere inválido)
+//Retornar um Token criado durante a execução, baseado no token de referencia no TRIENODE
 Token *buscarTrie(TRIENODE *raiz, char *palavra, unsigned linha){
 	int tam = strlen(palavra);
 	int indice;

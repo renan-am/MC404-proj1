@@ -100,6 +100,8 @@ int processarEntrada(char* entrada, unsigned tamanho){
 	return 0;
 }
 
+
+//Usa uma string static para ir salvando uma palavra (char a char) e ignora comentários e espaços em branco
 char *Buffer (char input){
     static char temp[4097];
     static int indice = 0;
@@ -253,6 +255,11 @@ int checarDec(char *dec){
     return 1;
 }
 
+
+// Busca na Trie se é instrução, diretiva, decimal ou hexadecimal
+// se for decimal ou hexadecimal, faz um segundo check para ver se tem carater inválido no meio
+// Se não fornenhum das 4 opções, testa se é DefRotulo ou Nome
+// Se indentificar erro, já gera o stderr
 Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     Token *aux = NULL;
     int tam = strlen(palavra);
@@ -324,6 +331,10 @@ Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha) {
     return NULL; //Codigo não deveria chegar aqui
 }
 
+
+// Checa a primeira palavra da linha e dependendo de qual for checa se os tokens seguintes são apropriados
+// return 1 como erro
+// return 0 OK
 int checarErroGram(Token **linha, int tam, int fim){
 	
 	for (int i = 0; i < tam; i++){
