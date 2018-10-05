@@ -1,10 +1,22 @@
+//Renan Clarindo Amorim 
+//RA: 186454
+
+/*
+	Como foi feito o lab:
+	1º Inicializo uma arvore de Trie, contendo todas as instruções e diretiva, além de um exemplo de Decimal e Hexadecimal
+	2º leio char a char da String entrada até o fim dela ('0')
+	3ª jogo cada char lido na função buffer, essa função retorna uma palavra completa ou NULL, ignorando espaços e comentários;
+	4º quando o buffer retorna uma palavra, ela é colocada na função classificarPalavra que usando a Trie e outros testes, detecta erros Lexicos, e gera Tokens
+	5º depois esse token (retornado de classificarPalavra) é colocada em array que simula a linha atual sendo lida, a medida que um token é adicionado é chamado a função checarErroGram.
+	6ª quando a linha é terminada (chega em um \n) a linha temporaria é enviada uma ultima vez em checarErroGramatical, se tiver ok, os tokens dessa linha são adicionados no array de tokens global (por meio de adicionarToken)
+	7º no fim a arvore é deletada (memoria é liberada) e a função termina.
+*/
 #include "montador.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "trie.h"
-//#include "func_aux.c"
 
 /*
     Exemplo de erros:
@@ -26,6 +38,67 @@
         * 1 caso haja erro na montagem; (imprima o erro em stderr)
         * 0 caso não haja erro.         (Caso não haja erro, na parte 1, ao retornar desta função, a lista de Tokens (adicionados utilizando a função adicionarToken()) é impressa)
 */
+
+int checarNome (Token *tok);
+int checarInstrucao (Token *tok);
+int checarDiretiva (Token *tok);
+int checarDec1_1023 (Token *tok);
+int checarHexDec0_1023 (Token *tok);
+int checarHexDec0_MAX (Token *tok);
+int checarHexDecMIN_MAX (Token *tok);
+int checarVazio (Token *tok);
+char *Buffer (char input);
+TRIENODE *inicializarTrie();
+Token *novoToken (char *palavra, TipoDoToken tipo, unsigned linha);
+int checarHex(char *hex);
+int checarDec(char *dec);
+Token *classificarPalavra(TRIENODE *raiz, char *palavra, unsigned linha);
+int checarErroGram(Token **linha, int tam, int fim);
+int processarEntrada(char* entrada, unsigned tamanho);
+
+
+int processarEntrada(char* entrada, unsigned tamanho){
+
+    TRIENODE *raiz = inicializarTrie();
+
+   	char *aux;
+    int linha_atual = 1;
+    Token *temp;
+    Token *linha_temp[10];
+    int indice = 0;
+
+    for (int i = 0; entrada[i] != '\0'; i++){
+        if ( (aux = Buffer(entrada[i])) ){
+            temp = classificarPalavra(raiz, aux, linha_atual);
+            if (!temp)
+            	return 1;
+            else {
+            	linha_temp[indice++] = temp;
+            	if (checarErroGram(linha_temp, indice, 0)){
+            		fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
+            		return 1;
+            	}
+            }
+            free(aux);
+        }
+	    if (entrada[i] == '\n'){
+	        if (checarErroGram(linha_temp, indice, 1)){
+				fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
+				return 1;
+			} else {
+				for (int j = 0; j < indice; j++){
+					adicionarToken (*linha_temp[j]);
+				}
+			}
+			indice = 0;
+	        linha_atual++; 
+		}
+	}
+
+	deletarTrie(raiz);
+	free (raiz);
+	return 0;
+}
 
 char *Buffer (char input){
     static char temp[4097];
@@ -256,7 +329,7 @@ int checarErroGram(Token **linha, int tam, int fim){
 	for (int i = 0; i < tam; i++){
 		if (linha[i]->tipo == Instrucao){
 			if ( !strcmp(linha[i]->palavra, "lsh") || !strcmp(linha[i]->palavra, "rsh") || !strcmp(linha[i]->palavra, "ldmq") ){
-				if (fim){
+				if (fim) {
 					if (i+1 >= tam)
 						return 0;
 					else
@@ -434,45 +507,71 @@ int checarErroGram(Token **linha, int tam, int fim){
 	return 0;
 }
 
-int processarEntrada(char* entrada, unsigned tamanho){
 
-    TRIENODE *raiz = inicializarTrie();
+int checarNome (Token *tok){
+	if (tok && tok->tipo == Nome)
+		return 0;
+	return 1;
+}
 
-   	char *aux;
-    int linha_atual = 1;
-    Token *temp;
-    Token *linha_temp[10];
-    int indice = 0;
+int checarInstrucao (Token *tok){
+	if (tok && tok->tipo == Instrucao)
+		return 0;
+	return 1;
+}
 
-    for (int i = 0; entrada[i] != '\0'; i++){
-        if ( (aux = Buffer(entrada[i])) ){
-            temp = classificarPalavra(raiz, aux, linha_atual);
-            if (!temp)
-            	return 1;
-            else {
-            	linha_temp[indice++] = temp;
-            	if (checarErroGram(linha_temp, indice, 0)){
-            		fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
-            		return 1;
-            	}
-            }
-            free(aux);
-        }
-	    if (entrada[i] == '\n'){
-	        if (checarErroGram(linha_temp, indice, 1)){
-				fprintf(stderr, "ERRO GRAMATICAL: palavra na linha %d!\n", linha_atual);
-				return 1;
-			} else {
-				for (int j = 0; j < indice; j++){
-					adicionarToken (*linha_temp[j]);
-				}
-			}
-			indice = 0;
-	        linha_atual++; 
-		}
-	}
+int checarDiretiva (Token *tok){
+	if (tok && tok->tipo == Diretiva)
+		return 0;
+	return 1;
+}
 
-	deletarTrie(raiz);
-	free (raiz);
-	return 0;
+
+int checarDec1_1023 (Token *tok){
+	if (tok && tok->tipo != Decimal)
+		return 1;
+	char *p;
+	long int valor;
+	valor = strtol (tok->palavra, &p, 0);
+	if (valor >= 1 && valor <= 1023)
+		return 0;
+	return 1;
+}
+
+int checarHexDec0_1023 (Token *tok){
+	//printf ("tipo = %d\n", tok->tipo);
+	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
+		return 1;
+	char *p;
+	long int valor;
+	valor = strtol (tok->palavra, &p, 0);
+	if (valor >= 0 && valor <= 1023)
+		return 0;
+	return 1;
+}
+
+int checarHexDec0_MAX (Token *tok){
+	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
+		return 1;
+	char *p;
+	long int valor;
+	valor = strtol (tok->palavra, &p, 0);
+	if (valor >= 0 && valor <= 2147483647)
+		return 0;
+	return 1;
+}
+
+int checarHexDecMIN_MAX (Token *tok){
+	if (tok && tok->tipo != Decimal && tok->tipo != Hexadecimal)
+		return 1;
+	char *p;
+	long int valor;
+	valor = strtol (tok->palavra, &p, 0);
+	if (valor >= -2147483648 && valor <= 2147483647)
+		return 0;
+	return 1;
+}
+
+int checarVazio (Token *tok){
+	return 1;
 }
