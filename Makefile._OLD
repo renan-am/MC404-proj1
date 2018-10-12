@@ -42,7 +42,7 @@ set-parte1:
 set-parte2:
 	$(eval parte=parte2)
 
-$(TESTES): 
+$(TESTES): montador-p1.x executar-tudo
 	$(eval teste=$@)
 	@echo "------------------- TESTE:" $(teste) " -------------------------"
 
@@ -74,5 +74,5 @@ clean:
 	$(RM) $(OUTDIR)/*.x
 	$(RM) $(SRC)/*.o
 
-teste: montador-p2.x
-	$(OUTDIR)/montador.x $(TESTDIR)/arq00.in
+teste: montador-p1.x
+	$(OUTDIR)/montador.x $(TESTDIR)/arq23.in

@@ -1,89 +1,18 @@
-Lista de tokens
-Token 0
-	Tipo: 1001 (Diretiva)
-	Palavra: ".set"
-	Linha: 1
-Token 1
-	Tipo: 1005 (Nome)
-	Palavra: "trezentos"
-	Linha: 1
-Token 2
-	Tipo: 1004 (Decimal)
-	Palavra: "300"
-	Linha: 1
-Token 3
-	Tipo: 1001 (Diretiva)
-	Palavra: ".org"
-	Linha: 3
-Token 4
-	Tipo: 1003 (Hexadecimal)
-	Palavra: "0x300"
-	Linha: 3
-Token 5
-	Tipo: 1002 (Definicao Rotulo)
-	Palavra: "um:"
-	Linha: 4
-Token 6
-	Tipo: 1001 (Diretiva)
-	Palavra: ".word"
-	Linha: 4
-Token 7
-	Tipo: 1004 (Decimal)
-	Palavra: "1"
-	Linha: 4
-Token 8
-	Tipo: 1001 (Diretiva)
-	Palavra: ".align"
-	Linha: 6
-Token 9
-	Tipo: 1004 (Decimal)
-	Palavra: "16"
-	Linha: 6
-Token 10
-	Tipo: 1002 (Definicao Rotulo)
-	Palavra: "vetor:"
-	Linha: 7
-Token 11
-	Tipo: 1001 (Diretiva)
-	Palavra: ".wfill"
-	Linha: 7
-Token 12
-	Tipo: 1004 (Decimal)
-	Palavra: "15"
-	Linha: 7
-Token 13
-	Tipo: 1005 (Nome)
-	Palavra: "trezentos"
-	Linha: 7
-Token 14
-	Tipo: 1001 (Diretiva)
-	Palavra: ".org"
-	Linha: 9
-Token 15
-	Tipo: 1004 (Decimal)
-	Palavra: "0"
-	Linha: 9
-Token 16
-	Tipo: 1000 (Instrucao)
-	Palavra: "ld"
-	Linha: 10
-Token 17
-	Tipo: 1005 (Nome)
-	Palavra: "vetor"
-	Linha: 10
-Token 18
-	Tipo: 1000 (Instrucao)
-	Palavra: "add"
-	Linha: 11
-Token 19
-	Tipo: 1005 (Nome)
-	Palavra: "um"
-	Linha: 11
-Token 20
-	Tipo: 1000 (Instrucao)
-	Palavra: "store"
-	Linha: 12
-Token 21
-	Tipo: 1005 (Nome)
-	Palavra: "vetor"
-	Linha: 12
+000 01   05   
+001 21   
+300 00 000 00 001
+310     
+311     
+312     
+313     
+314     
+315     
+316     
+317     
+318     
+319     
+31A     
+31B     
+31C     
+31D     
+31E     
