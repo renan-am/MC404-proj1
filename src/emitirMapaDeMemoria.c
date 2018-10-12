@@ -39,35 +39,44 @@ int busca_mapa_nome (MAPA_NOME *mapa_nome, int tam, char *nome) {
     return -1;
 }
 
-void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int endereco, int lado, int pos_lin, int pos_col, int set){
+void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int endereco, int lado, int pos_lin, int pos_col, int set) {
+    
+    int fim = strlen(nome);
+    if (nome[fim-1] == ':')
+        nome[fim-1] = '\0';
+
     int indice = busca_mapa_nome(mapa_nome, *tam, nome);
+    //printf("busca do nome %s na posicao = %d\n",nome ,indice);
+
 
     if (indice >= 0){
         if (endereco >= 0){
-            char *temp = malloc (5*sizeof(char));
+            char *temp = malloc (12*sizeof(char));
                 
             if (set)
                 sprintf(temp, "%lX", endereco);
             else
                 sprintf(temp, "%03lX", endereco);
             
-            mapa_nome[*tam].endereco = temp;
-            mapa_nome[*tam].lado = lado;
+            mapa_nome[indice].endereco = temp;
+            mapa_nome[indice].lado = lado;
         }
         else {
             int aux = mapa_nome[indice].tam_pos;
+           // printf ("tam = %d, aux = %d",  mapa_nome[indice].tam_pos, aux);
             mapa_nome[indice].pos_lin[aux] = pos_lin;
             mapa_nome[indice].pos_col[aux] = pos_col;
-            mapa_nome[indice].tam_pos++;
+            (mapa_nome[indice].tam_pos)++;
+            //printf ("indice = %d, tam = %d, aux = %d\n", indice, mapa_nome[indice].tam_pos, aux);
         }
     } else {
         int aux = mapa_nome[*tam].tam_pos;
         int t_nome = strlen (nome);
         mapa_nome[*tam].nome = malloc ((t_nome+1)*sizeof(char));
         strcpy(mapa_nome[*tam].nome, nome);
-
+        //printf("copiado nome %s\n", mapa_nome[*tam].nome);
         if (endereco >= 0){
-            char *temp = malloc (5*sizeof(char));
+            char *temp = malloc (12*sizeof(char));
             
             if (set)
                 sprintf(temp, "%lX", endereco);
@@ -79,8 +88,10 @@ void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int ender
         } else {        
             mapa_nome[*tam].pos_lin[aux] = pos_lin;
             mapa_nome[*tam].pos_col[aux] = pos_col;
-            (*tam)++;
+            mapa_nome[*tam].tam_pos++;
+            //printf ("tam = %d, aux = %d",  mapa_nome[indice].tam_pos, aux);
         }
+        (*tam)++;
     }
 
 }
@@ -101,7 +112,7 @@ char *traduz_instr(Token tok){
         return aux;
 	}
     else if ( !strcmp(tok.palavra, "ldmq") ) {
-        strcpy (aux, "0a");
+        strcpy (aux, "0A");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "ldmqmx") ) {
@@ -113,15 +124,15 @@ char *traduz_instr(Token tok){
         return aux;
     }
     else if ( !strcmp(tok.palavra, "jump") ) {
-        strcpy (aux, "");
+        strcpy (aux, "0D");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "jumpl") ) {
-        strcpy (aux, "");
+        strcpy (aux, "0F");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "jumpr") ) {
-        strcpy (aux, "");
+        strcpy (aux, "10");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "add") ) {
@@ -141,11 +152,11 @@ char *traduz_instr(Token tok){
         return aux;
     }
     else if ( !strcmp(tok.palavra, "mult") ) {
-        strcpy (aux, "0b");
+        strcpy (aux, "0B");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "div") ) {
-        strcpy (aux, "0c");
+        strcpy (aux, "0C");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "lsh") ) {
@@ -157,11 +168,11 @@ char *traduz_instr(Token tok){
         return aux;
     }
     else if ( !strcmp(tok.palavra, "storal") ) {
-        strcpy (aux, "");
+        strcpy (aux, "12");
         return aux;
     }
     else if ( !strcmp(tok.palavra, "storar") ) {
-        strcpy (aux, "");
+        strcpy (aux, "13");
         return aux;
     }
 
@@ -191,7 +202,7 @@ char *traduz_valor_HexDec(Token tok){
 
 
 
-void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome){
+void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int mapa_impressao[]){
 
     Token tok, tok1, tok2;
     int pos_lin = 0, pos_col = 0;
@@ -241,8 +252,19 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome){
                 inseri_mapa_nome (mapa_nome, tam_mapa_nome, tok1.palavra, end, -1, pos_lin, pos_col, 1);
             }
             else if ( !strcmp(tok.palavra, ".org") ){
+                int temp = pos_lin;
                 tok1 = recuperaToken(++i);
                 pos_lin = strtol(tok1.palavra, &lixo, 0);
+                
+                if (temp == 0 && i <= 3)
+                    mapa_impressao[1025] = pos_lin;
+                if (temp != pos_lin)
+                    mapa_impressao[temp] = pos_lin;
+                if (pos_lin == 0)
+                    mapa_impressao[pos_lin] = 1;
+
+
+                
                 pos_col = 1;
                 if (mapa[pos_lin][1] != NULL){
                     printf ("ERRO 1\n");
@@ -311,12 +333,15 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome){
                         return; //ERRO
                     }
                     if (tok2.tipo == Nome){
+                       // printf("Esse tam = %ld k = %d, tok.tipo = %d, Inserido %s na posicao linha: %d  col: %d\n", tam, k, tok2.tipo, tok1.palavra, pos_lin, pos_col);
                         mapa[pos_lin][pos_col] = malloc(12*sizeof(char));
                         sprintf(mapa[pos_lin][pos_col], " ");
-                        inseri_mapa_nome (mapa_nome, tam_mapa_nome, tok1.palavra, -1, -1, pos_lin, pos_col, 0);
+                        //printf("chamada : %d / %ld\n", k, tam);
+                        inseri_mapa_nome (mapa_nome, tam_mapa_nome, tok2.palavra, -1, -1, pos_lin, pos_col, 0);
                     } else {
+                        //printf("teste\n");
                         mapa[pos_lin][pos_col] = traduz_valor_HexDec(tok2); 
-                    }   
+                    }       
                     pos_lin++;
                 }
 
@@ -334,10 +359,19 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome){
             }
         }
     }
+    if (pos_col == 3){
+        mapa[pos_lin][pos_col] = malloc(5*sizeof(char));
+        sprintf(mapa[pos_lin][pos_col], "00");
+        pos_col++;
+        mapa[pos_lin][pos_col] = malloc(5*sizeof(char));
+        sprintf(mapa[pos_lin][pos_col], "000");
+    }
+
+    mapa_impressao[pos_lin] = 2000;
 }
 
-void imprimirMapa(char ***mapa){
-    for (int i = 0; i < MAPA_TAM; i++){
+void imprimirMapa(char ***mapa, int mapa_impressao[]){
+    for (int i = mapa_impressao[1024]; i < MAPA_TAM; i = mapa_impressao[i]){
         if (mapa[i][1] == NULL)
             continue;
         for (int j = 0; j < 5; j++){
@@ -374,10 +408,52 @@ void imprimirMapa(char ***mapa){
                 printf ("%s %s %s %s %s", mapa[i][0], aux1, aux2, aux3, aux4);
                 break;
             } else {
-                printf ("%s ", mapa[i][j]);
+                printf ("%s", mapa[i][j]);
+                if (j + 1 != 5)
+                    printf(" ");
             }
         } 
         printf("\n");
+    }
+}
+
+void substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
+    MAPA_NOME *aux;
+    for (int i = 0; i < *tam_mapa_nome; i++){
+        aux = &mapa_nome[i];
+        if (aux->endereco == NULL){
+            return; //ERRO
+        }
+        for (int j = 0; j < aux->tam_pos; j++){
+            if (aux->lado == -1){
+                const char *marg="00000000000000000000";
+                int margem = 10 - strlen(aux->endereco); 
+                if(margem < 0) 
+                    margem = 0;
+                //printf ("tamp_pos = %d  Inserido nome %*.*s%s na posicao linha: %d  col: %d\n", aux->tam_pos, margem, margem, marg, aux->endereco, aux->pos_lin[j], aux->pos_col[j] );
+                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%*.*s%s", margem, margem, marg, aux->endereco); 
+            } else {
+                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%s", aux->endereco);
+                if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "12") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "13" )){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"12");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"13");
+                } 
+                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0F") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "10" )){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0F");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"10");
+                }
+                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0D") ){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0D");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0E");
+                }
+            }
+        }
     }
 }
 
@@ -385,6 +461,12 @@ void imprimirMapa(char ***mapa){
 int emitirMapaDeMemoria()
 {
     char ***mapa = NULL;
+
+    int mapa_impressao[1025];
+    for (int i = 0; i < 1025; i++){
+        mapa_impressao[i] = i+1;
+    }
+    mapa_impressao[1024] = 0;
 
     mapa = malloc (MAPA_TAM * sizeof(char**));
     for (int i = 0; i <MAPA_TAM; i++){
@@ -396,19 +478,23 @@ int emitirMapaDeMemoria()
         sprintf(mapa[i][0], "%03X", i);
     }
 
-    MAPA_NOME *mapa_nome = calloc (500, sizeof(MAPA_NOME));
-    for (int i = 0; i < 500; i++){
-        mapa_nome[i].pos_lin = malloc (500* sizeof(int));
-        mapa_nome[i].pos_col = malloc (500* sizeof(int));
+    MAPA_NOME *mapa_nome = calloc (2000, sizeof(MAPA_NOME));
+    for (int i = 0; i < 2000; i++){
+        mapa_nome[i].nome = NULL;
+        mapa_nome[i].endereco = 0;
+        mapa_nome[i].pos_lin = malloc (2000* sizeof(int));
+        mapa_nome[i].pos_col = malloc (2000* sizeof(int));
         mapa_nome[i].tam_pos = 0;
     }
     int tam_mapa_nome = 0;
 
     //printf ("Chamar montar linhas \n");
-    montar_linhas (mapa, mapa_nome, &tam_mapa_nome);
+    montar_linhas (mapa, mapa_nome, &tam_mapa_nome, mapa_impressao);
     //printf ("Chamar imprimir Mapa \n");
 
-    imprimirMapa (mapa);
+    substituirNomes(mapa, mapa_nome, &tam_mapa_nome);
+
+    imprimirMapa (mapa, mapa_impressao);
 
     
 

@@ -75,4 +75,4 @@ clean:
 	$(RM) $(SRC)/*.o
 
 teste: montador-p2.x
-	$(OUTDIR)/montador.x $(TESTDIR)/arq00.in
+	$(OUTDIR)/montador.x $(TESTDIR)/arq23.in

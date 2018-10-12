@@ -1,0 +1,6 @@
+cat /mnt/d/proj404/aux/main2.c > /mnt/d/proj404/src/main.c
+gcc -std=c99 -Wall -O2 -o /mnt/d/proj404/bin/montador.x /mnt/d/proj404/src/*.c -lm
+/mnt/d/proj404/bin/montador.x /mnt/d/proj404/testes/arq09.in
+000 00 000 00 010
+001 00 000 00 123
+100 01 001 06 000
