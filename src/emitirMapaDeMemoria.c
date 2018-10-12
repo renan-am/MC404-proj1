@@ -202,7 +202,7 @@ char *traduz_valor_HexDec(Token tok){
 
 
 
-void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int mapa_impressao[]){
+int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int mapa_impressao[]){
 
     Token tok, tok1, tok2;
     int pos_lin = 0, pos_col = 0;
@@ -255,9 +255,9 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int m
                 int temp = pos_lin;
                 tok1 = recuperaToken(++i);
                 pos_lin = strtol(tok1.palavra, &lixo, 0);
-                
-                if (temp == 0 && i <= 3)
-                    mapa_impressao[1025] = pos_lin;
+                //printf ("temp = %d, pos_lin = %d, pos_col", temp, pos_lin);
+                if (temp == 0 && pos_col == 1)
+                    mapa_impressao[1024] = pos_lin;
                 if (temp != pos_lin)
                     mapa_impressao[temp] = pos_lin;
                 if (pos_lin == 0)
@@ -267,14 +267,14 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int m
                 
                 pos_col = 1;
                 if (mapa[pos_lin][1] != NULL){
-                    printf ("ERRO 1\n");
-                    return; //ERRO
+                    fprintf(stderr, "IMPOSSIVEL MONTAR CODIGO!\n");
+                    return 1; //ERRO
                 }
             }
             else if ( !strcmp(tok.palavra, ".word") ){
                 if (pos_col != 1){
-                    printf ("ERRO 2\n");
-                    return; //ERRO
+                    fprintf(stderr, "IMPOSSIVEL MONTAR CODIGO!\n");
+                    return 1; //ERRO
                 }
                 
                 tok1 = recuperaToken(++i);
@@ -321,16 +321,16 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int m
             }
             else if ( !strcmp(tok.palavra, ".wfill") ){
                 if (pos_col != 1){
-                    printf ("ERRO 3\n");
-                    return; //ERRO
+                    fprintf(stderr, "IMPOSSIVEL MONTAR CODIGO!\n");
+                    return 1; //ERRO
                 }
                 tok1 = recuperaToken(++i);
                 tok2 = recuperaToken(++i);
                 long int tam = strtol(tok1.palavra, &lixo, 0);
                 for (int k = 0; k < tam; k++){
                     if (mapa[pos_lin][pos_col] != NULL){
-                        printf ("ERRO 4\n");
-                        return; //ERRO
+                        fprintf(stderr, "IMPOSSIVEL MONTAR CODIGO!\n");
+                        return 1; //ERRO
                     }
                     if (tok2.tipo == Nome){
                        // printf("Esse tam = %ld k = %d, tok.tipo = %d, Inserido %s na posicao linha: %d  col: %d\n", tam, k, tok2.tipo, tok1.palavra, pos_lin, pos_col);
@@ -354,8 +354,8 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int m
             pos_col = 1;
 
             if (mapa[pos_lin][1] != NULL){
-                printf ("ERRO 5\n");
-                return; //ERRO
+                fprintf(stderr, "IMPOSSIVEL MONTAR CODIGO!\n");
+                return 1; //ERRO
             }
         }
     }
@@ -368,6 +368,7 @@ void montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int m
     }
 
     mapa_impressao[pos_lin] = 2000;
+    return 0;
 }
 
 void imprimirMapa(char ***mapa, int mapa_impressao[]){
@@ -417,12 +418,13 @@ void imprimirMapa(char ***mapa, int mapa_impressao[]){
     }
 }
 
-void substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
+int substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
     MAPA_NOME *aux;
     for (int i = 0; i < *tam_mapa_nome; i++){
         aux = &mapa_nome[i];
         if (aux->endereco == NULL){
-            return; //ERRO
+            fprintf(stderr, "ERRO: Usado mas não definido: %s\n", aux->nome);
+            return 1; //ERRO
         }
         for (int j = 0; j < aux->tam_pos; j++){
             if (aux->lado == -1){
@@ -455,6 +457,8 @@ void substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
             }
         }
     }
+
+    return 0;
 }
 
 
@@ -489,11 +493,14 @@ int emitirMapaDeMemoria()
     int tam_mapa_nome = 0;
 
     //printf ("Chamar montar linhas \n");
-    montar_linhas (mapa, mapa_nome, &tam_mapa_nome, mapa_impressao);
+    if (montar_linhas (mapa, mapa_nome, &tam_mapa_nome, mapa_impressao))
+        return 1;
     //printf ("Chamar imprimir Mapa \n");
 
-    substituirNomes(mapa, mapa_nome, &tam_mapa_nome);
+    if (substituirNomes(mapa, mapa_nome, &tam_mapa_nome))
+        return 1;
 
+    //printf ("começa aqui = %d\n", mapa_impressao[1024]);
     imprimirMapa (mapa, mapa_impressao);
 
     

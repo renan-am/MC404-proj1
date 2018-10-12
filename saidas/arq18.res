@@ -1,2 +1,1 @@
-000 05 00A 05  
-001 06 00F 00 000
+ERRO: Usado mas não definido: k
