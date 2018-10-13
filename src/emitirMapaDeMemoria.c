@@ -1,3 +1,16 @@
+//Aluno: Renan Clarindo Amorim
+//RA: 186454
+
+/*
+    O código é estruturado em torno de 3 variaveis:
+    1ª char ***mapa, é uma matriz 3d, onde as linhas são as linhas do código, e cada coluna representam o endereço, instruções e memórias (AAA | DD | DDD | DD | DDD)
+    2ª MAPA_NOME *mapa_nome é um vetor de struct onde cada elemento repsenta um nome (tanto de rotulo como de .set). Em *nome é guardado o valor de referencia, em *endereco
+    é guardado o valor que será substituido (endereço ou valor)
+    3ª int *mapa_impressão é um mapa que representa os pulos feitos por causa do .org, permitindo que seja impresso corretamente o mapa de memoria (na ordem certa)
+
+*/
+
+
 #include "montador.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,18 +33,91 @@ typedef struct DADOS {
     char ***mapa_rotulos;
 } DADOS;
 
+
+
 typedef struct MAPA_NOME {
-    char *nome;
-    char *endereco;
+    char *nome; //nome de referencia
+    char *endereco; //valor que substitui o nome
     int lado; //-1: linha toda, 0: esquerda, 1: direita
-    int tam_pos;
+    int tam_pos; // tamanho do vetor pos_lin e pos_col 
+    // vetores que guardam a linha e coluna (da matriz mapa) de onde apareceram cada rotulo
     int *pos_lin;
-    int *pos_col;
-    struct MAPA_NOME *prox;
+    int *pos_col; 
 } MAPA_NOME;
 
-int busca_mapa_nome (MAPA_NOME *mapa_nome, int tam, char *nome) {
+int busca_mapa_nome (MAPA_NOME *mapa_nome, int tam, char *nome);
+void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int endereco, int lado, int pos_lin, int pos_col, int set); 
+char *traduz_instr(Token tok);
+char *traduz_endereco_HexDec(Token tok);
+char *traduz_valor_HexDec(Token tok);
+int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int mapa_impressao[]);
+int substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome);
+void imprimirMapa(char ***mapa, int mapa_impressao[]);
 
+
+int emitirMapaDeMemoria()
+{
+
+    int mapa_impressao[1025]; //representa a sequencia de linhas para imprimir na ordem que o .org ocorre no código, na ultima posição, 1025, é guardado o valor onde deve iniciar a impressão do mapa de memória
+    for (int i = 0; i < 1025; i++){
+        mapa_impressao[i] = i+1;
+    }
+    mapa_impressao[1024] = 0;
+    
+    char ***mapa = NULL; //matriz 3d representado as linhas do codigo e seus elementos
+
+    mapa = malloc (MAPA_TAM * sizeof(char**));
+    for (int i = 0; i <MAPA_TAM; i++){
+    	mapa[i] = malloc(5*sizeof(char*));
+        for (int j = 1; j < 5; j++){
+            mapa[i][j] = NULL;
+        }
+        mapa[i][0] = malloc(5*sizeof(char));
+        sprintf(mapa[i][0], "%03X", i);
+    }
+
+    MAPA_NOME *mapa_nome = calloc (2000, sizeof(MAPA_NOME)); //vetor de struct que guarda os rotulos a medida que aparecem, também guarda a posição de onde cada um apareceu 
+    for (int i = 0; i < 2000; i++){
+        mapa_nome[i].nome = NULL;
+        mapa_nome[i].endereco = 0;
+        mapa_nome[i].pos_lin = malloc (2000* sizeof(int));
+        mapa_nome[i].pos_col = malloc (2000* sizeof(int));
+        mapa_nome[i].tam_pos = 0;
+    }
+    int tam_mapa_nome = 0;
+
+    if (montar_linhas (mapa, mapa_nome, &tam_mapa_nome, mapa_impressao))
+        return 1;
+
+    if (substituirNomes(mapa, mapa_nome, &tam_mapa_nome))
+        return 1;
+
+    imprimirMapa (mapa, mapa_impressao);
+
+    for (int i = 0; i < MAPA_TAM; i++){
+        for (int j = 0; j<5; j++){
+            if (mapa[i][j] != NULL) {
+                free(mapa[i][j]);
+            }
+        }
+        free(mapa[i]);
+    }
+    free(mapa);
+
+    for (int i = 0; i < 2000; i++){
+        if (mapa_nome[i].nome != NULL)
+            free (mapa_nome[i].nome);
+        if (mapa_nome[i].endereco != NULL) 
+            free (mapa_nome[i].endereco);
+        free (mapa_nome[i].pos_lin);
+        free (mapa_nome[i].pos_col);
+    }
+    free (mapa_nome);
+    return 0;
+}
+
+
+int busca_mapa_nome (MAPA_NOME *mapa_nome, int tam, char *nome) {
     for (int i = 0; i < tam; i++)
         if (!strcmp(mapa_nome[i].nome, nome))
             return i;
@@ -39,6 +125,7 @@ int busca_mapa_nome (MAPA_NOME *mapa_nome, int tam, char *nome) {
     return -1;
 }
 
+//Procura se o rotulo existe, e dependendo se é definição (DefRotulo: ou .set) ou não adiciona as informções pertinentes
 void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int endereco, int lado, int pos_lin, int pos_col, int set) {
     
     int fim = strlen(nome);
@@ -46,7 +133,6 @@ void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int ender
         nome[fim-1] = '\0';
 
     int indice = busca_mapa_nome(mapa_nome, *tam, nome);
-    //printf("busca do nome %s na posicao = %d\n",nome ,indice);
 
 
     if (indice >= 0){
@@ -63,18 +149,15 @@ void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int ender
         }
         else {
             int aux = mapa_nome[indice].tam_pos;
-           // printf ("tam = %d, aux = %d",  mapa_nome[indice].tam_pos, aux);
             mapa_nome[indice].pos_lin[aux] = pos_lin;
             mapa_nome[indice].pos_col[aux] = pos_col;
             (mapa_nome[indice].tam_pos)++;
-            //printf ("indice = %d, tam = %d, aux = %d\n", indice, mapa_nome[indice].tam_pos, aux);
         }
     } else {
         int aux = mapa_nome[*tam].tam_pos;
         int t_nome = strlen (nome);
         mapa_nome[*tam].nome = malloc ((t_nome+1)*sizeof(char));
         strcpy(mapa_nome[*tam].nome, nome);
-        //printf("copiado nome %s\n", mapa_nome[*tam].nome);
         if (endereco >= 0){
             char *temp = malloc (12*sizeof(char));
             
@@ -89,28 +172,26 @@ void inseri_mapa_nome(MAPA_NOME *mapa_nome, int *tam, char *nome, long int ender
             mapa_nome[*tam].pos_lin[aux] = pos_lin;
             mapa_nome[*tam].pos_col[aux] = pos_col;
             mapa_nome[*tam].tam_pos++;
-            //printf ("tam = %d, aux = %d",  mapa_nome[indice].tam_pos, aux);
         }
         (*tam)++;
     }
-
 }
 
-
+//Retorna o valor hexadecimal
 char *traduz_instr(Token tok){
-	char *aux = malloc(5*sizeof(char));
+    char *aux = malloc(5*sizeof(char));
     if ( !strcmp(tok.palavra, "ld") ) {
         strcpy (aux, "01");
         return aux;
-	} 
-	else if ( !strcmp(tok.palavra, "ldinv") ) {
+    } 
+    else if ( !strcmp(tok.palavra, "ldinv") ) {
         strcpy (aux, "02");
         return aux;
-	}
-	else if ( !strcmp(tok.palavra, "ldabs") ) {
+    }
+    else if ( !strcmp(tok.palavra, "ldabs") ) {
         strcpy (aux, "03");
         return aux;
-	}
+    }
     else if ( !strcmp(tok.palavra, "ldmq") ) {
         strcpy (aux, "0A");
         return aux;
@@ -179,6 +260,7 @@ char *traduz_instr(Token tok){
     return aux;
 }
 
+//Recebe um endereço decimal ou hexadecimal, e retorna uma string formatada
 char *traduz_endereco_HexDec(Token tok){
     char *aux = malloc (5*sizeof(char));
     long int temp = 0;
@@ -189,6 +271,7 @@ char *traduz_endereco_HexDec(Token tok){
     return aux;
 }
 
+//Recebe um valor decimal ou hexadecimal, e retorna uma string formatada
 char *traduz_valor_HexDec(Token tok){
     char *aux = malloc (12*sizeof(char));
     long int temp = 0;
@@ -196,12 +279,10 @@ char *traduz_valor_HexDec(Token tok){
 
     temp = strtol(tok.palavra, &lixo, 0);
     sprintf(aux, "%010lX", temp);
-    //printf("valor convertido = %s\n", aux);
     return aux;
 }
 
-
-
+//Le a lista de tokens gerando as linha hexadecimais, também executa os comandos das diretivas e carrega em mapa_nome os Nomes que encontra
 int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int mapa_impressao[]){
 
     Token tok, tok1, tok2;
@@ -255,12 +336,13 @@ int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int ma
                 int temp = pos_lin;
                 tok1 = recuperaToken(++i);
                 pos_lin = strtol(tok1.palavra, &lixo, 0);
-                //printf ("temp = %d, pos_lin = %d, pos_col", temp, pos_lin);
-                if (temp == 0 && pos_col == 1)
+                
+                //Garante que mapa_impressão é preenchido corretamente
+                if (temp == 0 && pos_col == 1) //se o codigo começa com o org, o coloca em mapa_impressaõ[1024] que armazena por onde a impressão deve começar
                     mapa_impressao[1024] = pos_lin;
-                if (temp != pos_lin)
+                if (temp != pos_lin) //evitar criar loops se o .org pular pra linha que já está 
                     mapa_impressao[temp] = pos_lin;
-                if (pos_lin == 0)
+                if (pos_lin == 0) //Se pular de volta pra linha 0, garante que a proxima instrução a ser executada será a da linha 1
                     mapa_impressao[pos_lin] = 1;
 
 
@@ -293,7 +375,7 @@ int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int ma
                 long int val = strtol(tok1.palavra, &lixo, 0);
                 while (pos_lin < MAPA_TAM){
                     if (pos_lin % val == 0){
-                        if (pos_col == 3){
+                        if (pos_col == 3){//preenche o resto da linha com 0
                             mapa[pos_lin][pos_col] = malloc(5*sizeof(char));
                             sprintf(mapa[pos_lin][pos_col++], "00");
                             
@@ -307,7 +389,7 @@ int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int ma
                             break;
                     } 
                     else {
-                        if (pos_col == 3) {
+                        if (pos_col == 3) {//preenche o resto da linha com 0
                             mapa[pos_lin][pos_col] = malloc(5*sizeof(char));
                             sprintf(mapa[pos_lin][pos_col++], "00");
                             
@@ -333,13 +415,10 @@ int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int ma
                         return 1; //ERRO
                     }
                     if (tok2.tipo == Nome){
-                       // printf("Esse tam = %ld k = %d, tok.tipo = %d, Inserido %s na posicao linha: %d  col: %d\n", tam, k, tok2.tipo, tok1.palavra, pos_lin, pos_col);
                         mapa[pos_lin][pos_col] = malloc(12*sizeof(char));
                         sprintf(mapa[pos_lin][pos_col], " ");
-                        //printf("chamada : %d / %ld\n", k, tam);
                         inseri_mapa_nome (mapa_nome, tam_mapa_nome, tok2.palavra, -1, -1, pos_lin, pos_col, 0);
                     } else {
-                        //printf("teste\n");
                         mapa[pos_lin][pos_col] = traduz_valor_HexDec(tok2); 
                     }       
                     pos_lin++;
@@ -368,6 +447,49 @@ int montar_linhas(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome, int ma
     }
 
     mapa_impressao[pos_lin] = 2000;
+    return 0;
+}
+
+//Percorre mapa_nome e substitui eles pelos valores apropriados, também trata casos onde a instrução anterior depende da posição do Nome
+int substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
+    MAPA_NOME *aux;
+    for (int i = 0; i < *tam_mapa_nome; i++){
+        aux = &mapa_nome[i];
+        if (aux->endereco == NULL){
+            fprintf(stderr, "ERRO: Usado mas não definido: %s\n", aux->nome);
+            return 1; //ERRO
+        }
+        for (int j = 0; j < aux->tam_pos; j++){
+            if (aux->lado == -1){
+                const char *marg="00000000000000000000";
+                int margem = 10 - strlen(aux->endereco); 
+                if(margem < 0) 
+                    margem = 0;
+                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%*.*s%s", margem, margem, marg, aux->endereco); 
+            } else { //Checa a instrução que vem antes se precisa de ajuste por causa da prosição do Nome
+                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%s", aux->endereco);
+                if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "12") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "13" )){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"12");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"13");
+                } 
+                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0F") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "10" )){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0F");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"10");
+                }
+                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0D") ){
+                    if (aux->lado == 0)
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0D");
+                    else 
+                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0E");
+                }
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -416,98 +538,4 @@ void imprimirMapa(char ***mapa, int mapa_impressao[]){
         } 
         printf("\n");
     }
-}
-
-int substituirNomes(char ***mapa, MAPA_NOME *mapa_nome, int *tam_mapa_nome) {
-    MAPA_NOME *aux;
-    for (int i = 0; i < *tam_mapa_nome; i++){
-        aux = &mapa_nome[i];
-        if (aux->endereco == NULL){
-            fprintf(stderr, "ERRO: Usado mas não definido: %s\n", aux->nome);
-            return 1; //ERRO
-        }
-        for (int j = 0; j < aux->tam_pos; j++){
-            if (aux->lado == -1){
-                const char *marg="00000000000000000000";
-                int margem = 10 - strlen(aux->endereco); 
-                if(margem < 0) 
-                    margem = 0;
-                //printf ("tamp_pos = %d  Inserido nome %*.*s%s na posicao linha: %d  col: %d\n", aux->tam_pos, margem, margem, marg, aux->endereco, aux->pos_lin[j], aux->pos_col[j] );
-                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%*.*s%s", margem, margem, marg, aux->endereco); 
-            } else {
-                sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j]] ,"%s", aux->endereco);
-                if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "12") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "13" )){
-                    if (aux->lado == 0)
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"12");
-                    else 
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"13");
-                } 
-                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0F") || !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "10" )){
-                    if (aux->lado == 0)
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0F");
-                    else 
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"10");
-                }
-                else if ( !strcmp(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1], "0D") ){
-                    if (aux->lado == 0)
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0D");
-                    else 
-                        sprintf(mapa[aux->pos_lin[j]][aux->pos_col[j] - 1] ,"0E");
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
-
-int emitirMapaDeMemoria()
-{
-    char ***mapa = NULL;
-
-    int mapa_impressao[1025];
-    for (int i = 0; i < 1025; i++){
-        mapa_impressao[i] = i+1;
-    }
-    mapa_impressao[1024] = 0;
-
-    mapa = malloc (MAPA_TAM * sizeof(char**));
-    for (int i = 0; i <MAPA_TAM; i++){
-    	mapa[i] = malloc(5*sizeof(char*));
-        for (int j = 1; j < 5; j++){
-            mapa[i][j] = NULL;
-        }
-        mapa[i][0] = malloc(5*sizeof(char));
-        sprintf(mapa[i][0], "%03X", i);
-    }
-
-    MAPA_NOME *mapa_nome = calloc (2000, sizeof(MAPA_NOME));
-    for (int i = 0; i < 2000; i++){
-        mapa_nome[i].nome = NULL;
-        mapa_nome[i].endereco = 0;
-        mapa_nome[i].pos_lin = malloc (2000* sizeof(int));
-        mapa_nome[i].pos_col = malloc (2000* sizeof(int));
-        mapa_nome[i].tam_pos = 0;
-    }
-    int tam_mapa_nome = 0;
-
-    //printf ("Chamar montar linhas \n");
-    if (montar_linhas (mapa, mapa_nome, &tam_mapa_nome, mapa_impressao))
-        return 1;
-    //printf ("Chamar imprimir Mapa \n");
-
-    if (substituirNomes(mapa, mapa_nome, &tam_mapa_nome))
-        return 1;
-
-    //printf ("começa aqui = %d\n", mapa_impressao[1024]);
-    imprimirMapa (mapa, mapa_impressao);
-
-    
-
-        
-    
-
-
-    return 0;
 }
